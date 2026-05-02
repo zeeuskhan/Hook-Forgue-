@@ -72,12 +72,13 @@ export interface GeneratedCommentReplies {
 const MODEL_NAME = "gemini-3-flash-preview";
 
 function cleanJSON(text: string): string {
-  // Remove markdown code blocks if present
   let cleaned = text.trim();
-  if (cleaned.startsWith("```")) {
-    cleaned = cleaned.replace(/^```[a-z]*\n/i, "").replace(/\n```$/m, "");
+  // Try to find a JSON block starting with { and ending with }
+  const match = cleaned.match(/\{[\s\S]*\}/);
+  if (match) {
+    return match[0];
   }
-  return cleaned.trim();
+  return cleaned;
 }
 
 export async function generateHooks(topic: string, tone: string, platform: string): Promise<GeneratedHooks> {

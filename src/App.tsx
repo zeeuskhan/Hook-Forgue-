@@ -1082,7 +1082,7 @@ function CommentAISection({ copyToClipboard, copiedId }: any) {
 }
 
 function ToolSection({ 
-  topic, setTopic, tone, setTone, platform, setPlatform, handleGenerate, loading, hooks, outputRef, CATEGORY_META, copyToClipboard, copiedId 
+  topic, setTopic, tone, setTone, platform, setPlatform, handleGenerate, loading, error, hooks, outputRef, CATEGORY_META, copyToClipboard, copiedId 
 }: any) {
   return (
     <div className="space-y-12">
@@ -1327,7 +1327,7 @@ function NotFound() {
   );
 }
 
-export default function App() {
+function AppContent() {
   const [topic, setTopic] = useState("");
   const [tone, setTone] = useState("Viral");
   const [platform, setPlatform] = useState("YouTube");
@@ -1335,6 +1335,7 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [hooks, setHooks] = useState<GeneratedHooks | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const location = useLocation();
   
   const outputRef = useRef<HTMLDivElement>(null);
 
@@ -1361,220 +1362,226 @@ export default function App() {
   };
 
   return (
-    <Router>
-      <div className="min-h-screen bg-[#0b0c0f] text-gray-200 selection:bg-orange-500/30 font-sans">
-        {/* Navigation */}
-        <nav className="sticky top-0 z-50 bg-[#0b0c0f]/80 backdrop-blur-md border-b border-white/5">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
-              <Link to="/" className="flex items-center gap-2 group">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-rose-500 flex items-center justify-center transition-transform group-hover:scale-110">
-                  <Zap className="w-5 h-5 text-white" />
-                </div>
-                <div className="flex flex-col -space-y-1">
-                  <span className="text-lg font-bold tracking-tight text-white font-display">
-                    HookForge <span className="text-orange-500">AI</span>
-                  </span>
-                  <span className="text-[8px] font-black uppercase text-gray-600 tracking-[0.2em]">Creator Tools</span>
-                </div>
-              </Link>
+    <div className="min-h-screen bg-[#0b0c0f] text-gray-200 selection:bg-orange-500/30 font-sans">
+      {/* Navigation */}
+      <nav className="sticky top-0 z-50 bg-[#0b0c0f]/80 backdrop-blur-md border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <Link to="/" className="flex items-center gap-2 group">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-rose-500 flex items-center justify-center transition-transform group-hover:scale-110">
+                <Zap className="w-5 h-5 text-white" />
+              </div>
+              <div className="flex flex-col -space-y-1">
+                <span className="text-lg font-bold tracking-tight text-white font-display">
+                  HookForge <span className="text-orange-500">AI</span>
+                </span>
+                <span className="text-[8px] font-black uppercase text-gray-600 tracking-[0.2em]">Creator Tools</span>
+              </div>
+            </Link>
+            
+            <div className="hidden lg:flex items-center gap-6">
+              <div className="flex items-center gap-1 bg-white/5 p-1 rounded-xl border border-white/10">
+                {TOOLS.map(tool => (
+                  <Link 
+                    key={tool.id} 
+                    to={tool.id === "hooks" ? "/" : `/tool-${tool.id}`}
+                    className={`px-4 py-1.5 rounded-lg text-[10px] font-bold transition-all uppercase tracking-wider flex items-center gap-2 ${
+                      (tool.id === "hooks" && location.pathname === "/") || location.pathname === `/tool-${tool.id}`
+                      ? "bg-orange-500 text-white shadow-lg"
+                      : "text-gray-500 hover:text-white hover:bg-white/5"
+                    }`}
+                  >
+                    <tool.icon className="w-3 h-3" />
+                    {tool.name.split(" ")[0]}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <div className="lg:hidden flex items-center gap-2">
+              <Link to="/" className="p-2 rounded-lg bg-white/5 text-gray-500"><Layout className="w-5 h-5"/></Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <main className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+        <Routes>
+          <Route path="/" element={
+            <>
+              <SEO 
+                title="YouTube Hook Generator | Free Viral YouTube Intro Generator AI" 
+                description="Generate 20+ viral YouTube hooks in seconds. The #1 free YouTube hook generator and intro generator for creators to master viewer retention on Shorts, and Reels." 
+                schema={{
+                  "@context": "https://schema.org",
+                  "@type": "FAQPage",
+                  "mainEntity": FAQS.map(faq => ({
+                    "@type": "Question",
+                    "name": faq.q,
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": faq.a
+                    }
+                  }))
+                }}
+              />
+              <ToolSection 
+                topic={topic} setTopic={setTopic} 
+                tone={tone} setTone={setTone} 
+                platform={platform} setPlatform={setPlatform} 
+                handleGenerate={handleGenerate} loading={loading} 
+                error={error}
+                hooks={hooks} outputRef={outputRef} 
+                CATEGORY_META={CATEGORY_META} 
+                copyToClipboard={copyToClipboard} 
+                copiedId={copiedId} 
+              />
+
+              {/* Viral Statistics & Keyword Proof */}
+              <div className="mt-32 grid grid-cols-2 md:grid-cols-4 gap-8">
+                {[
+                  { label: "Viral Hooks Generated", val: "1.2M+" },
+                  { label: "Retention Boost", val: "40%+" },
+                  { label: "Active Creators", val: "50k+" },
+                  { label: "Platforms Supported", val: "5" }
+                ].map((stat, i) => (
+                  <div key={i} className="text-center p-6 bg-white/5 rounded-3xl border border-white/10">
+                    <p className="text-3xl font-extrabold text-white mb-1">{stat.val}</p>
+                    <p className="text-[10px] font-bold text-orange-500 uppercase tracking-widest">{stat.label}</p>
+                  </div>
+                ))}
+              </div>
               
-              <div className="hidden lg:flex items-center gap-6">
-                <div className="flex items-center gap-1 bg-white/5 p-1 rounded-xl border border-white/10">
-                  {TOOLS.map(tool => (
+              {/* Tool Grid */}
+              <div className="mt-32 space-y-12">
+                <div className="text-center space-y-4">
+                  <h2 className="text-3xl font-bold text-white">Pro Creator <span className="text-orange-500">Suite</span></h2>
+                  <p className="text-gray-500">Everything you need to grow your channel from zero to viral.</p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {TOOLS.filter(t => t.id !== "hooks").map(tool => (
                     <Link 
                       key={tool.id} 
-                      to={tool.id === "hooks" ? "/" : `/tool-${tool.id}`}
-                      className={`px-4 py-1.5 rounded-lg text-[10px] font-bold transition-all uppercase tracking-wider flex items-center gap-2 ${
-                        (tool.id === "hooks" && location.pathname === "/") || location.pathname === `/tool-${tool.id}`
-                        ? "bg-orange-500 text-white shadow-lg"
-                        : "text-gray-500 hover:text-white hover:bg-white/5"
-                      }`}
+                      to={`/tool-${tool.id}`}
+                      className="bg-[#111318] border border-white/5 rounded-3xl p-8 hover:border-orange-500/40 transition-all group"
                     >
-                      <tool.icon className="w-3 h-3" />
-                      {tool.name.split(" ")[0]}
+                      <div className="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <tool.icon className="w-6 h-6 text-orange-500" />
+                      </div>
+                      <h3 className="text-lg font-bold text-white mb-2">{tool.name}</h3>
+                      <p className="text-sm text-gray-500 leading-relaxed mb-6">{tool.description}</p>
+                      <div className="flex items-center gap-2 text-xs font-bold text-gray-700 uppercase tracking-widest group-hover:text-orange-500 transition-colors">
+                        Try Tool <ArrowRight className="w-3 h-3" />
+                      </div>
                     </Link>
                   ))}
                 </div>
               </div>
 
-              <div className="lg:hidden flex items-center gap-2">
-                {/* Mobile Menu Placeholder - simplified */}
-                <Link to="/" className="p-2 rounded-lg bg-white/5 text-gray-500"><Layout className="w-5 h-5"/></Link>
-              </div>
-            </div>
-          </div>
-        </nav>
-
-        <main className="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
-          <Routes>
-            <Route path="/" element={
-              <>
-                <SEO 
-                  title="YouTube Hook Generator | Free Viral YouTube Intro Generator AI" 
-                  description="Generate 20+ viral YouTube hooks in seconds. The #1 free YouTube hook generator and intro generator for creators to master viewer retention on Shorts, and Reels." 
-                  schema={{
-                    "@context": "https://schema.org",
-                    "@type": "FAQPage",
-                    "mainEntity": FAQS.map(faq => ({
-                      "@type": "Question",
-                      "name": faq.q,
-                      "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": faq.a
-                      }
-                    }))
-                  }}
-                />
-                <ToolSection 
-                  topic={topic} setTopic={setTopic} 
-                  tone={tone} setTone={setTone} 
-                  platform={platform} setPlatform={setPlatform} 
-                  handleGenerate={handleGenerate} loading={loading} 
-                  hooks={hooks} outputRef={outputRef} 
-                  CATEGORY_META={CATEGORY_META} 
-                  copyToClipboard={copyToClipboard} 
-                  copiedId={copiedId} 
-                />
-
-                {/* Viral Statistics & Keyword Proof */}
-                <div className="mt-32 grid grid-cols-2 md:grid-cols-4 gap-8">
-                  {[
-                    { label: "Viral Hooks Generated", val: "1.2M+" },
-                    { label: "Retention Boost", val: "40%+" },
-                    { label: "Active Creators", val: "50k+" },
-                    { label: "Platforms Supported", val: "5" }
-                  ].map((stat, i) => (
-                    <div key={i} className="text-center p-6 bg-white/5 rounded-3xl border border-white/10">
-                      <p className="text-3xl font-extrabold text-white mb-1">{stat.val}</p>
-                      <p className="text-[10px] font-bold text-orange-500 uppercase tracking-widest">{stat.label}</p>
-                    </div>
-                  ))}
-                </div>
-                
-                {/* Tool Grid */}
-                <div className="mt-32 space-y-12">
-                  <div className="text-center space-y-4">
-                    <h2 className="text-3xl font-bold text-white">Pro Creator <span className="text-orange-500">Suite</span></h2>
-                    <p className="text-gray-500">Everything you need to grow your channel from zero to viral.</p>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {TOOLS.filter(t => t.id !== "hooks").map(tool => (
-                      <Link 
-                        key={tool.id} 
-                        to={`/tool-${tool.id}`}
-                        className="bg-[#111318] border border-white/5 rounded-3xl p-8 hover:border-orange-500/40 transition-all group"
-                      >
-                        <div className="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                          <tool.icon className="w-6 h-6 text-orange-500" />
-                        </div>
-                        <h3 className="text-lg font-bold text-white mb-2">{tool.name}</h3>
-                        <p className="text-sm text-gray-500 leading-relaxed mb-6">{tool.description}</p>
-                        <div className="flex items-center gap-2 text-xs font-bold text-gray-700 uppercase tracking-widest group-hover:text-orange-500 transition-colors">
-                          Try Tool <ArrowRight className="w-3 h-3" />
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-
-                {/* FAQ & Bottom Content */}
-                <div className="mt-32 space-y-20 border-t border-white/5 pt-20">
-                  <section className="grid lg:grid-cols-3 gap-12">
-                    <div className="lg:col-span-1 space-y-6">
-                      <h2 className="text-3xl font-bold text-white font-display">The Ultimate <span className="text-orange-500">YouTube Intro Generator</span></h2>
-                      <p className="text-gray-500 text-sm leading-relaxed">
-                        HookForge AI is the industry-leading <strong>viral hook generator</strong> designed specifically for the 2025 algorithm. 
-                        Whether you need a <strong>reel hook generator</strong> or <strong>video hook generator</strong>, our AI recalibrates word counts for maximum punchiness.
-                      </p>
-                      <div className="pt-4 flex flex-col gap-4">
-                        <div className="flex items-center gap-3 text-sm text-gray-400">
-                          <Globe className="w-4 h-4 text-orange-500" /> Viral Youtube Opening Lines
-                        </div>
-                        <div className="flex items-center gap-3 text-sm text-gray-400">
-                          <Target className="w-4 h-4 text-orange-500" /> Curiosity Gap Hooks YouTube
-                        </div>
-                        <div className="flex items-center gap-3 text-sm text-gray-400">
-                          <Share2 className="w-4 h-4 text-orange-500" /> Storytelling Hooks for Videos
-                        </div>
+              {/* FAQ & Bottom Content */}
+              <div className="mt-32 space-y-20 border-t border-white/5 pt-20">
+                <section className="grid lg:grid-cols-3 gap-12">
+                  <div className="lg:col-span-1 space-y-6">
+                    <h2 className="text-3xl font-bold text-white font-display">The Ultimate <span className="text-orange-500">YouTube Intro Generator</span></h2>
+                    <p className="text-gray-500 text-sm leading-relaxed">
+                      HookForge AI is the industry-leading <strong>viral hook generator</strong> designed specifically for the 2025 algorithm. 
+                      Whether you need a <strong>reel hook generator</strong> or <strong>video hook generator</strong>, our AI recalibrates word counts for maximum punchiness.
+                    </p>
+                    <div className="pt-4 flex flex-col gap-4">
+                      <div className="flex items-center gap-3 text-sm text-gray-400">
+                        <Globe className="w-4 h-4 text-orange-500" /> Viral Youtube Opening Lines
+                      </div>
+                      <div className="flex items-center gap-3 text-sm text-gray-400">
+                        <Target className="w-4 h-4 text-orange-500" /> Curiosity Gap Hooks YouTube
+                      </div>
+                      <div className="flex items-center gap-3 text-sm text-gray-400">
+                        <Share2 className="w-4 h-4 text-orange-500" /> Storytelling Hooks for Videos
                       </div>
                     </div>
-                    <div className="lg:col-span-2 bg-white/5 rounded-3xl p-8 border border-white/10">
-                      <h3 className="text-2xl font-bold text-white mb-6">Mastering the Curiosity Gap</h3>
-                      <p className="text-gray-400 text-sm mb-8 leading-relaxed">
-                        Learn <strong>how to write a hook for youtube</strong> that actually sticks. Most creators fail because they lead with a greeting. 
-                        AI-generated <strong>youtube script hooks</strong> prioritize the 'Path Interrupt'—a psychological trigger that forces the brain to stop scrolling.
-                      </p>
-                      <div className="divide-y divide-white/5">
-                        {FAQS.map((faq, i) => (
-                          <CollapsibleFAQ key={i} faq={faq} />
-                        ))}
-                      </div>
+                  </div>
+                  <div className="lg:col-span-2 bg-white/5 rounded-3xl p-8 border border-white/10">
+                    <h3 className="text-2xl font-bold text-white mb-6">Mastering the Curiosity Gap</h3>
+                    <p className="text-gray-400 text-sm mb-8 leading-relaxed">
+                      Learn <strong>how to write a hook for youtube</strong> that actually sticks. Most creators fail because they lead with a greeting. 
+                      AI-generated <strong>youtube script hooks</strong> prioritize the 'Path Interrupt'—a psychological trigger that forces the brain to stop scrolling.
+                    </p>
+                    <div className="divide-y divide-white/5">
+                      {FAQS.map((faq, i) => (
+                        <CollapsibleFAQ key={i} faq={faq} />
+                      ))}
                     </div>
-                  </section>
-                </div>
-              </>
-            } />
-            <Route path="/tool-titles" element={<TitleSection copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
-            <Route path="/tool-descriptions" element={<DescriptionSection copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
-            <Route path="/tool-tags" element={<TagSection copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
-            <Route path="/tool-ideas" element={<IdeaSection />} />
-            <Route path="/tool-names" element={<ChannelNamerSection copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
-            <Route path="/tool-thumbnails" element={<ThumbnailIdeaSection copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
-            <Route path="/tool-script" element={<ScriptOutlineSection copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
-            <Route path="/tool-comments" element={<CommentAISection copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
-            <Route path="/hooks-for-:nicheId" element={<NichePage copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </main>
-
-        {/* Footer */}
-        <footer className="border-t border-white/10 mt-32 py-16 bg-black/40">
-          <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-4 gap-12">
-            <div className="col-span-1 md:col-span-2 space-y-6">
-              <div className="flex items-center gap-2">
-                <Zap className="w-6 h-6 text-orange-500" />
-                <span className="text-xl font-bold text-white font-display">HookForge AI</span>
+                  </div>
+                </section>
               </div>
-              <p className="text-gray-500 max-w-sm leading-relaxed">
-                Empowering storytellers to win the war for attention. 
-                Optimized for the 2025 creator economy.
-              </p>
+            </>
+          } />
+          <Route path="/tool-titles" element={<TitleSection copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
+          <Route path="/tool-descriptions" element={<DescriptionSection copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
+          <Route path="/tool-tags" element={<TagSection copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
+          <Route path="/tool-ideas" element={<IdeaSection />} />
+          <Route path="/tool-names" element={<ChannelNamerSection copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
+          <Route path="/tool-thumbnails" element={<ThumbnailIdeaSection copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
+          <Route path="/tool-script" element={<ScriptOutlineSection copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
+          <Route path="/tool-comments" element={<CommentAISection copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
+          <Route path="/hooks-for-:nicheId" element={<NichePage copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </main>
+
+      {/* Footer */}
+      <footer className="border-t border-white/10 mt-32 py-16 bg-black/40">
+        <div className="max-w-7xl mx-auto px-4 grid md:grid-cols-4 gap-12">
+          <div className="col-span-1 md:col-span-2 space-y-6">
+            <div className="flex items-center gap-2">
+              <Zap className="w-6 h-6 text-orange-500" />
+              <span className="text-xl font-bold text-white font-display">HookForge AI</span>
             </div>
-            <div className="space-y-4">
-              <h4 className="text-sm font-bold text-white uppercase tracking-widest text-orange-500">Free Tools</h4>
-              <nav className="flex flex-col gap-2">
-                {TOOLS.map(t => (
-                  <Link key={t.id} to={t.id === "hooks" ? "/" : `/tool-${t.id}`} className="text-gray-500 hover:text-white text-sm transition-colors">
-                    {t.name}
-                  </Link>
-                ))}
-              </nav>
-            </div>
-            <div className="space-y-4">
-              <h4 className="text-sm font-bold text-white uppercase tracking-widest text-orange-500">Niche Guides</h4>
-              <nav className="flex flex-col gap-2">
-                {NICHE_PAGES.map(p => (
-                  <Link key={p.id} to={`/hooks-for-${p.id}`} className="text-gray-500 hover:text-white text-sm transition-colors">
-                    Hooks for {p.id.split("-").join(" ")}
-                  </Link>
-                ))}
-              </nav>
-            </div>
-            <div className="space-y-4">
-              <h4 className="text-sm font-bold text-white uppercase tracking-widest text-orange-500">Legal</h4>
-              <nav className="flex flex-col gap-2">
-                <a href="#" className="text-gray-500 hover:text-white text-sm">Privacy</a>
-                <a href="#" className="text-gray-500 hover:text-white text-sm">Terms</a>
-                <span className="text-gray-800 text-xs mt-4 block">Built with Gemini 2.0</span>
-              </nav>
-            </div>
+            <p className="text-gray-500 max-sm leading-relaxed">
+              Empowering storytellers to win the war for attention. 
+              Optimized for the 2025 creator economy.
+            </p>
           </div>
-          <div className="max-w-7xl mx-auto px-4 mt-16 pt-8 border-t border-white/5 text-center text-[10px] uppercase font-bold tracking-[0.3em] text-gray-700">
-            © 2026 HookForge AI · Master the Hook
+          <div className="space-y-4">
+            <h4 className="text-sm font-bold text-white uppercase tracking-widest text-orange-500">Free Tools</h4>
+            <nav className="flex flex-col gap-2">
+              {TOOLS.map(t => (
+                <Link key={t.id} to={t.id === "hooks" ? "/" : `/tool-${t.id}`} className="text-gray-500 hover:text-white text-sm transition-colors">
+                  {t.name}
+                </Link>
+              ))}
+            </nav>
           </div>
-        </footer>
-      </div>
+          <div className="space-y-4">
+            <h4 className="text-sm font-bold text-white uppercase tracking-widest text-orange-500">Niche Guides</h4>
+            <nav className="flex flex-col gap-2">
+              {NICHE_PAGES.map(p => (
+                <Link key={p.id} to={`/hooks-for-${p.id}`} className="text-gray-500 hover:text-white text-sm transition-colors">
+                  Hooks for {p.id.split("-").join(" ")}
+                </Link>
+              ))}
+            </nav>
+          </div>
+          <div className="space-y-4">
+            <h4 className="text-sm font-bold text-white uppercase tracking-widest text-orange-500">Legal</h4>
+            <nav className="flex flex-col gap-2">
+              <a href="#" className="text-gray-500 hover:text-white text-sm">Privacy</a>
+              <a href="#" className="text-gray-500 hover:text-white text-sm">Terms</a>
+              <span className="text-gray-800 text-xs mt-4 block">Built with Gemini 2.0</span>
+            </nav>
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 mt-16 pt-8 border-t border-white/5 text-center text-[10px] uppercase font-bold tracking-[0.3em] text-gray-700">
+          © 2026 HookForge AI · Master the Hook
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }
