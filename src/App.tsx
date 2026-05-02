@@ -1234,6 +1234,21 @@ function NichePage({ copyToClipboard, copiedId }: any) {
   );
 }
 
+function NotFound() {
+  return (
+    <div className="flex flex-col items-center justify-center py-32 text-center space-y-6">
+      <div className="w-20 h-20 rounded-3xl bg-orange-500/10 flex items-center justify-center mb-4">
+        <Zap className="w-10 h-10 text-orange-500" />
+      </div>
+      <h1 className="text-4xl font-black text-white uppercase tracking-tighter">Hook Not Found</h1>
+      <p className="text-gray-500 max-w-xs">The tool or page you're looking for doesn't exist or has moved.</p>
+      <Link to="/" className="px-6 py-3 bg-white/5 border border-white/10 rounded-xl text-white font-bold hover:bg-orange-500 transition-all">
+        Back to Dashboard
+      </Link>
+    </div>
+  );
+}
+
 export default function App() {
   const [topic, setTopic] = useState("");
   const [tone, setTone] = useState("Viral");
@@ -1428,6 +1443,7 @@ export default function App() {
             <Route path="/tool-script" element={<ScriptOutlineSection copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
             <Route path="/tool-comments" element={<CommentAISection copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
             <Route path="/hooks-for-:nicheId" element={<NichePage copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
 
