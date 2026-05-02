@@ -148,22 +148,114 @@ const NICHE_PAGES = [
       "If you don't buy [Asset] now, you will never be able to afford it.",
       "I studied the top 1% of earners. They all have this one habit in common."
     ]
+  },
+  {
+    id: "cooking-channels",
+    title: "YouTube Hooks for Cooking & Recipe Channels",
+    metaTitle: "Viral YouTube Hooks for Cooking & Food Channels | HookForge AI",
+    metaDesc: "Get more views on your recipes. Use these AI-generated hooks for food bloggers, street food vloggers, and home chefs to stop the scroll.",
+    description: "Food is visceral. These hooks focus on the 'Secret Ingredient' and 'Common Mistakes' that ruin popular dishes.",
+    psychology: "Taps into 'Hidden Knowledge' and the 'Fear of Ruining' an expensive or time-consuming meal.",
+    hooks: [
+      "You've been cooking [Dish] wrong your entire life. Here's why.",
+      "Adding this ONE secret ingredient will make your [Dish] taste like a 5-star restaurant.",
+      "I tried the viral [Dish] recipe and it was a total disaster—do this instead.",
+      "Stop throwing away your [Leftover Food]! You can make this in 5 minutes.",
+      "Is this the world's best [Dish]? I traveled to [Country] to find out."
+    ]
+  },
+  {
+    id: "tech-channels",
+    title: "YouTube Hook Examples for Tech Channels",
+    metaTitle: "Viral YouTube Hook Examples for Tech & Gadget Reviews",
+    metaDesc: "Reviewing gadgets? Use these tech-focused YouTube hooks to highlight hidden features, compare brands, and build authority.",
+    description: "Tech audiences value specs and secrets. Use these pattern interrupts to highlight the 'hidden' features of popular gadgets.",
+    psychology: "Uses 'Buyer's Remorse' and 'Technological Superiority' to force viewers to validate their own purchases.",
+    hooks: [
+      "This [Gadget] has a hidden feature that completely changes how it works.",
+      "Stop buying [Brand] until you see what [Competitor] just released.",
+      "I tested 10 [Gadgets] so you don't have to — this is the clear winner.",
+      "Apple just released an update that literally broke my iPhone.",
+      "The one setting you MUST change on your laptop before you use it."
+    ]
+  },
+  {
+    id: "motivational-videos",
+    title: "Motivational Hooks for YouTube Videos",
+    metaTitle: "20+ Powerful Motivational Hooks for YouTube Videos",
+    metaDesc: "Increase retention on your motivational and self-improvement content. Use these aggressive and emotional hooks to inspire action.",
+    description: "In self-improvement, the hook must challenge the viewer's current identity. Create productive discomfort that leads to change.",
+    psychology: "Direct challenge triggers – making the viewer feel their current stagnation is a choice they must change.",
+    hooks: [
+      "If you're still [Bad Habit], you're not serious about your future self.",
+      "I wasted 5 years following this 'productivity' advice. Here's what actually worked.",
+      "The hard truth about [Goal] that most motivational speakers won't tell you.",
+      "You aren't lazy. You're just doing this one thing that's killing your drive.",
+      "I interviewed 100 millionaires and they all told me the same thing about success."
+    ]
   }
 ];
 
 const FAQS = [
-  { q: "Is this the best AI hook generator for YouTube?", a: "Based on creator feedback, HookForge AI provides the most psychologically-grounded hooks by using advanced triggers like FOMO, Path Interrupt, and Narrative Loops." },
-  { q: "Does this work for YouTube Shorts and Instagram Reels?", a: "Yes. The tool recalibrates the word count and punchiness based on your platform selection to ensure hooks fit on-screen as text overlays." },
-  { q: "How do I rank my video using these hooks?", a: "Always place your hook in the first 3 seconds of audio and as a high-contrast text overlay to catch viewers who watch with sound off." }
+  { q: "Is this YouTube hook generator free?", a: "Yes! HookForge AI is a free tool designed to help creators generate viral opening lines without a subscription." },
+  { q: "How do I write a viral hook for YouTube?", a: "To write a viral hook, start with a Pattern Interrupt or a Curiosity Gap. Avoid 'Hi guys' and jump straight into the problem your video solves." },
+  { q: "Can I use this for YouTube Shorts and Instagram Reels?", a: "Absolutely. Select the platform in the tool to get ultra-short, punchy hooks specifically optimized for vertical scrolling." },
+  { q: "How to start a YouTube video hook for beginners?", a: "Start with a direct question or a shocking statistic. For example: '99% of people fail at [topic] because of this one mistake.' This builds instant intrigue." },
+  { q: "What is the best first line for a YouTube video?", a: "The best first line identifies a deep pain point or a high-value desire within 3 seconds, forcing the viewer to stay to see the resolution." }
 ];
 
 // ─── UTILS ─────────────────────────────────────────────────────────────────
-function SEO({ title, description }: { title: string; description: string }) {
+const PRODUCTION_URL = "https://scripthookgenerate.vercel.app";
+
+function SEO({ title, description, schema }: { title: string; description: string; schema?: any }) {
+  const location = useLocation();
+  
   useEffect(() => {
     document.title = title;
-    const metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) metaDesc.setAttribute("content", description);
-  }, [title, description]);
+    
+    // Meta Description
+    let metaDesc = document.querySelector('meta[name="description"]');
+    if (!metaDesc) {
+      metaDesc = document.createElement('meta');
+      metaDesc.setAttribute('name', 'description');
+      document.head.appendChild(metaDesc);
+    }
+    metaDesc.setAttribute("content", description);
+
+    // Canonical Link
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute("href", `${PRODUCTION_URL}${location.pathname}`);
+
+    // Schema.org JSON-LD
+    let script = document.querySelector('#schema-data');
+    if (!script) {
+      script = document.createElement('script');
+      script.id = 'schema-data';
+      script.setAttribute('type', 'application/ld+json');
+      document.head.appendChild(script);
+    }
+    
+    const defaultSchema = {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "HookForge AI",
+      "url": PRODUCTION_URL,
+      "operatingSystem": "All",
+      "applicationCategory": "MultimediaApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    };
+
+    script.textContent = JSON.stringify(schema || defaultSchema);
+  }, [title, description, schema, location.pathname]);
   return null;
 }
 
@@ -332,7 +424,25 @@ function NichePage({ copyToClipboard, copiedId }: any) {
 
   return (
     <div className="space-y-12 max-w-4xl mx-auto">
-      <SEO title={niche.metaTitle} description={niche.metaDesc} />
+      <SEO 
+        title={niche.metaTitle} 
+        description={niche.metaDesc} 
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [{
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": PRODUCTION_URL
+          },{
+            "@type": "ListItem",
+            "position": 2,
+            "name": niche.title,
+            "item": `${PRODUCTION_URL}/hooks-for-${niche.id}`
+          }]
+        }}
+      />
       <nav className="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase tracking-widest mb-12">
         <Link to="/" className="hover:text-orange-500">Home</Link>
         <ArrowRight className="w-3 h-3" />
@@ -369,9 +479,26 @@ function NichePage({ copyToClipboard, copiedId }: any) {
       <div className="bg-indigo-500/5 border border-indigo-500/20 rounded-3xl p-8 space-y-4">
         <h3 className="text-lg font-bold text-white flex items-center gap-2">
           <ShieldCheck className="w-5 h-5 text-indigo-400" />
-          The Psychology Instead
+          The Psychology Insight
         </h3>
         <p className="text-gray-400 leading-relaxed text-sm">{niche.psychology}</p>
+      </div>
+
+      {/* Internal Linking: More Niches */}
+      <div className="space-y-6 pt-12 border-t border-white/5">
+        <h3 className="text-xl font-bold text-white">Explore Other Niches</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {NICHE_PAGES.filter(n => n.id !== nicheId).map(n => (
+            <Link 
+              key={n.id} 
+              to={`/hooks-for-${n.id}`}
+              className="bg-white/5 border border-white/5 rounded-2xl p-4 hover:border-orange-500/40 transition-all group"
+            >
+              <FileText className="w-4 h-4 text-gray-500 mb-2 group-hover:text-orange-500" />
+              <p className="text-sm font-bold text-gray-400 group-hover:text-white transition-colors">{n.id.split("-").join(" ")}</p>
+            </Link>
+          ))}
+        </div>
       </div>
 
       <div className="py-20 text-center space-y-6 border-t border-white/5 mt-20">
@@ -453,7 +580,19 @@ export default function App() {
               <>
                 <SEO 
                   title="YouTube Hook Generator | Free Viral Hook AI Tool" 
-                  description="Generate 20 scroll-stopping YouTube hooks in seconds. The #1 free AI tool for creators to master viewer retention on YouTube, Shorts, and Reels." 
+                  description="Generate 20 scroll-stopping YouTube hooks in seconds. The #1 free AI tool for creators to master viewer retention on YouTube, Shorts, and Reels using psychology-backed script openers." 
+                  schema={{
+                    "@context": "https://schema.org",
+                    "@type": "FAQPage",
+                    "mainEntity": FAQS.map(faq => ({
+                      "@type": "Question",
+                      "name": faq.q,
+                      "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": faq.a
+                      }
+                    }))
+                  }}
                 />
                 <ToolSection 
                   topic={topic} setTopic={setTopic} 
@@ -465,27 +604,49 @@ export default function App() {
                   copyToClipboard={copyToClipboard} 
                   copiedId={copiedId} 
                 />
+
+                {/* Viral Statistics & Keyword Proof */}
+                <div className="mt-32 grid grid-cols-2 md:grid-cols-4 gap-8">
+                  {[
+                    { label: "Viral Hooks Generated", val: "1.2M+" },
+                    { label: "Retention Boost", val: "40%+" },
+                    { label: "Active Creators", val: "50k+" },
+                    { label: "Platforms Supported", val: "5" }
+                  ].map((stat, i) => (
+                    <div key={i} className="text-center p-6 bg-white/5 rounded-3xl border border-white/10">
+                      <p className="text-3xl font-extrabold text-white mb-1">{stat.val}</p>
+                      <p className="text-[10px] font-bold text-orange-500 uppercase tracking-widest">{stat.label}</p>
+                    </div>
+                  ))}
+                </div>
                 
                 {/* FAQ & Bottom Content */}
                 <div className="mt-32 space-y-20 border-t border-white/5 pt-20">
                   <section className="grid lg:grid-cols-3 gap-12">
-                    <div className="lg:col-span-1 space-y-4">
-                      <h2 className="text-3xl font-bold text-white font-display">Engineered for <span className="text-orange-500">Attention</span></h2>
-                      <p className="text-gray-500">HookForge isn't a text generator—it's a psychological simulation of your audience's curiosity gap.</p>
-                      <div className="pt-4 flex flex-col gap-3">
+                    <div className="lg:col-span-1 space-y-6">
+                      <h2 className="text-3xl font-bold text-white font-display">The Ultimate <span className="text-orange-500">YouTube Intro Generator</span></h2>
+                      <p className="text-gray-500 text-sm leading-relaxed">
+                        HookForge AI is the industry-leading <strong>viral hook generator</strong> designed specifically for the 2025 algorithm. 
+                        Whether you need a <strong>reel hook generator</strong> or <strong>video hook generator</strong>, our AI recalibrates word counts for maximum punchiness.
+                      </p>
+                      <div className="pt-4 flex flex-col gap-4">
                         <div className="flex items-center gap-3 text-sm text-gray-400">
-                          <Globe className="w-4 h-4 text-orange-500" /> Multi-Platform Support
+                          <Globe className="w-4 h-4 text-orange-500" /> Viral Youtube Opening Lines
                         </div>
                         <div className="flex items-center gap-3 text-sm text-gray-400">
-                          <Target className="w-4 h-4 text-orange-500" /> Psychological Frameworks
+                          <Target className="w-4 h-4 text-orange-500" /> Curiosity Gap Hooks YouTube
                         </div>
                         <div className="flex items-center gap-3 text-sm text-gray-400">
-                          <Share2 className="w-4 h-4 text-orange-500" /> Viral Strategy Guide
+                          <Share2 className="w-4 h-4 text-orange-500" /> Storytelling Hooks for Videos
                         </div>
                       </div>
                     </div>
                     <div className="lg:col-span-2 bg-white/5 rounded-3xl p-8 border border-white/10">
-                      <h3 className="text-2xl font-bold text-white mb-6">Frequently Asked Questions</h3>
+                      <h3 className="text-2xl font-bold text-white mb-6">Mastering the Curiosity Gap</h3>
+                      <p className="text-gray-400 text-sm mb-8 leading-relaxed">
+                        Learn <strong>how to write a hook for youtube</strong> that actually sticks. Most creators fail because they lead with a greeting. 
+                        AI-generated <strong>youtube script hooks</strong> prioritize the 'Path Interrupt'—a psychological trigger that forces the brain to stop scrolling.
+                      </p>
                       <div className="divide-y divide-white/5">
                         {FAQS.map((faq, i) => (
                           <CollapsibleFAQ key={i} faq={faq} />

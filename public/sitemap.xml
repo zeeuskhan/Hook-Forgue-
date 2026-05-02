@@ -1,32 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://hookforge.ai/</loc>
+    <loc>https://scripthookgenerate.vercel.app/</loc>
     <lastmod>2026-05-02</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://hookforge.ai/hooks-for-beginner-gamers</loc>
+    <loc>https://scripthookgenerate.vercel.app/hooks-for-beginner-gamers</loc>
     <lastmod>2026-05-02</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://hookforge.ai/hooks-for-fitness-influencers</loc>
+    <loc>https://scripthookgenerate.vercel.app/hooks-for-fitness-influencers</loc>
     <lastmod>2026-05-02</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://hookforge.ai/hooks-for-tech-reviewers</loc>
+    <loc>https://scripthookgenerate.vercel.app/hooks-for-tech-reviewers</loc>
     <lastmod>2026-05-02</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://hookforge.ai/hooks-for-travel-vloggers</loc>
+    <loc>https://scripthookgenerate.vercel.app/hooks-for-travel-vloggers</loc>
     <lastmod>2026-05-02</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://hookforge.ai/hooks-for-finance-experts</loc>
+    <loc>https://scripthookgenerate.vercel.app/hooks-for-finance-experts</loc>
+    <lastmod>2026-05-02</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://scripthookgenerate.vercel.app/hooks-for-cooking-channels</loc>
+    <lastmod>2026-05-02</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://scripthookgenerate.vercel.app/hooks-for-tech-channels</loc>
+    <lastmod>2026-05-02</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://scripthookgenerate.vercel.app/hooks-for-motivational-videos</loc>
     <lastmod>2026-05-02</lastmod>
     <priority>0.8</priority>
   </url>
