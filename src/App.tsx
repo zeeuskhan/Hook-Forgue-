@@ -94,10 +94,10 @@ const NICHE_PAGES = [
   {
     id: "beginner-gamers",
     title: "YouTube Hooks for Beginner Gamers",
-    metaTitle: "20+ Viral YouTube Hooks for Beginner Gamers | HookForge AI",
-    metaDesc: "Struggling to grow your new gaming channel? Use these AI-generated YouTube hooks designed specifically for beginner gamers to stop the scroll.",
-    description: "If you're just starting out, you need to prove your value instantly. Use these hooks to build authority even with zero subscribers.",
-    psychology: "Focuses on 'Hidden Secrets' and 'Instant Fixes' to level the playing field against bigger creators.",
+    metaTitle: "20+ Viral YouTube Hooks for Beginner Gamers | YouTube Hook Generator",
+    metaDesc: "Grow your gaming channel with viral opening lines. Use our free YouTube hook generator specifically for beginner gamers to stop the scroll.",
+    description: "If you're just starting out, you need to prove your value instantly. Use these viral youtube opening lines to build authority even with zero subscribers.",
+    psychology: "This video hook generator focuses on hidden secrets and instant fixes to level the playing field against bigger creators. Perfect for your next youtube script hook.",
     hooks: [
       "I found a secret in [Game] that 99% of players completely missed.",
       "Stop using [Weapon/Item]. It's actually the worst choice in the game.",
@@ -114,10 +114,10 @@ const NICHE_PAGES = [
   {
     id: "fitness-influencers",
     title: "Instagram Reels Hooks for Fitness Influencers",
-    metaTitle: "Scroll-Stopping Instagram Reels Hooks for Fitness Influencers",
-    metaDesc: "Boost your Reels engagement with these fitness-focused hooks. Perfect for gym motivation, nutrition tips, and workout routines.",
-    description: "On Instagram, you have less than 2 seconds. These hooks are optimized for high-impact visual storytelling and curiosity gaps.",
-    psychology: "Leverages 'Biological Urgency' and 'Identity Defense' – making the viewer feel their current routine is a personal risk.",
+    metaTitle: "Viral Instagram & Reel Hook Generator for Fitness Influencers",
+    metaDesc: "Boost Reels engagement with fitness-focused hooks. The best reel hook generator for gym motivation, nutrition tips, and workouts.",
+    description: "On Instagram, you have less than 2 seconds. Our reel hook generator provides high-impact visual storytelling prompts and curiosity gaps.",
+    psychology: "Leverages biological urgency and identity defense. Great for writing a viral youtube script hook for fitness shorts as well.",
     hooks: [
       "Stop doing [Exercise] until you watch this 30-second fix.",
       "I ate [Food] every day for a week and this is what happened to my body.",
@@ -134,9 +134,9 @@ const NICHE_PAGES = [
   {
     id: "tech-reviewers",
     title: "YouTube Shorts Hooks for Tech Reviewers",
-    metaTitle: "Punchy YouTube Shorts Hooks for Tech & Gadget Reviewers",
-    metaDesc: "Short, sharp, and shocking. Use these tech hooks to showcase gadgets and software in under 60 seconds.",
-    description: "Tech audiences value specs and secrets. Use these pattern interrupts to highlight the 'hidden' features of popular gadgets.",
+    metaTitle: "Punchy YouTube Shorts Hooks for Tech Reviewers | Hook Generator",
+    metaDesc: "Short, sharp, and shocking tech hooks. Use this video hook generator to showcase gadgets and software in under 60 seconds.",
+    description: "Tech audiences value specs and secrets. Our youtube shorts hook generator helps you highlight hidden gadget features.",
     psychology: "Uses 'Buyer's Remorse' and 'Technological Superiority' to force viewers to validate their own purchases.",
     hooks: [
       "This [Gadget] has a hidden feature that completely changes how it works.",
@@ -154,9 +154,9 @@ const NICHE_PAGES = [
   {
     id: "travel-vloggers",
     title: "Instagram Reels Hooks for Travel Vloggers",
-    metaTitle: "Viral Travel Hooks for Instagram Reels & TikTok",
-    metaDesc: "Make your travel content trend. Viral hooks for budget travelers, luxury vloggers, and solo explorers.",
-    description: "Travel is visual, but the hook provides the context. Open a narrative loop that forces the viewer to see the payoff.",
+    metaTitle: "Viral Instagram Travel Hooks & Reel Hook Generator AI",
+    metaDesc: "Make your travel content trend. The best reel hook generator for budget travelers, luxury vloggers, and solo explorers.",
+    description: "Travel is visual, but the hook provides the context. Our travel vlog hook generator opens narrative loops that force viewers to stay.",
     psychology: "Triggers 'Escapism' and 'Exclusive Access' – making the viewer feel they have discovered a hidden portal.",
     hooks: [
       "Everything they told you about [Destination] is a lie. Here's the truth.",
@@ -194,10 +194,10 @@ const NICHE_PAGES = [
   {
     id: "cooking-channels",
     title: "YouTube Hooks for Cooking & Recipe Channels",
-    metaTitle: "Viral YouTube Hooks for Cooking & Food Channels | HookForge AI",
-    metaDesc: "Get more views on your recipes. Use these AI-generated hooks for food bloggers, street food vloggers, and home chefs to stop the scroll.",
-    description: "Food is visceral. These hooks focus on the 'Secret Ingredient' and 'Common Mistakes' that ruin popular dishes.",
-    psychology: "Taps into 'Hidden Knowledge' and the 'Fear of Ruining' an expensive or time-consuming meal.",
+    metaTitle: "Viral YouTube Hooks for Cooking Channels | Video Hook Generator",
+    metaDesc: "Get more views on your recipes. Use our free youtube hook generator for food bloggers and chefs to stop the scroll.",
+    description: "Food is visceral. Use these best hooks for youtube videos to highlight a secret ingredient or common cooking mistake.",
+    psychology: "Taps into hidden knowledge and the fear of ruining a recipe. A powerful storytelling hook generator for home chefs.",
     hooks: [
       "You've been cooking [Dish] wrong your entire life. Here's why.",
       "Adding this ONE secret ingredient will make your [Dish] taste like a 5-star restaurant.",
@@ -209,9 +209,9 @@ const NICHE_PAGES = [
   {
     id: "tech-channels",
     title: "YouTube Hook Examples for Tech Channels",
-    metaTitle: "Viral YouTube Hook Examples for Tech & Gadget Reviews",
-    metaDesc: "Reviewing gadgets? Use these tech-focused YouTube hooks to highlight hidden features, compare brands, and build authority.",
-    description: "Tech audiences value specs and secrets. Use these pattern interrupts to highlight the 'hidden' features of popular gadgets.",
+    metaTitle: "YouTube Hook Examples for Tech Channels | Viral Hook Generator",
+    metaDesc: "Reviewing gadgets? Use this tech-focused YouTube hook generator to highlight hidden features and build authority.",
+    description: "Tech audiences value specs and secrets. Use our youtube script hook generator to interrupt the scroll with gadget secrets.",
     psychology: "Uses 'Buyer's Remorse' and 'Technological Superiority' to force viewers to validate their own purchases.",
     hooks: [
       "This [Gadget] has a hidden feature that completely changes how it works.",
@@ -224,9 +224,9 @@ const NICHE_PAGES = [
   {
     id: "motivational-videos",
     title: "Motivational Hooks for YouTube Videos",
-    metaTitle: "20+ Powerful Motivational Hooks for YouTube Videos",
-    metaDesc: "Increase retention on your motivational and self-improvement content. Use these aggressive and emotional hooks to inspire action.",
-    description: "In self-improvement, the hook must challenge the viewer's current identity. Create productive discomfort that leads to change.",
+    metaTitle: "Motivational Hooks for YouTube | YouTube Intro Generator",
+    metaDesc: "Increase retention on motivational content. Use our youtube intro generator for aggressive and emotional opening lines.",
+    description: "In self-improvement, the hook must challenge the viewer's identity. Use these best hooks for youtube videos to create productive discomfort.",
     psychology: "Direct challenge triggers – making the viewer feel their current stagnation is a choice they must change.",
     hooks: [
       "If you're still [Bad Habit], you're not serious about your future self.",
@@ -239,11 +239,11 @@ const NICHE_PAGES = [
 ];
 
 const FAQS = [
-  { q: "Is this YouTube hook generator free?", a: "Yes! HookForge AI is a free tool designed to help creators generate viral opening lines without a subscription." },
-  { q: "How do I write a viral hook for YouTube?", a: "To write a viral hook, start with a Pattern Interrupt or a Curiosity Gap. Avoid 'Hi guys' and jump straight into the problem your video solves." },
-  { q: "Can I use this for YouTube Shorts and Instagram Reels?", a: "Absolutely. Select the platform in the tool to get ultra-short, punchy hooks specifically optimized for vertical scrolling." },
-  { q: "How to start a YouTube video hook for beginners?", a: "Start with a direct question or a shocking statistic. For example: '99% of people fail at [topic] because of this one mistake.' This builds instant intrigue." },
-  { q: "What is the best first line for a YouTube video?", a: "The best first line identifies a deep pain point or a high-value desire within 3 seconds, forcing the viewer to stay to see the resolution." }
+  { q: "What is the best YouTube hook generator?", a: "HookForge AI is the #1 YouTube hook generator because it uses psychology-backed templates and advanced AI to generate viral opening lines that stop the scroll." },
+  { q: "How do I write a viral hook for YouTube?", a: "To write a viral hook for YouTube, start with a pattern interrupt or a great curiosity gap. Our viral hook generator helps you identify the exact pain point or desire of your viewer in under 3 seconds." },
+  { q: "Can I use this as a reel hook generator?", a: "Yes! HookForge AI works as a high-impact reel hook generator and YouTube shorts hook generator. Simply select your platform to get optimized hooks for vertical video scrolling." },
+  { q: "How to start a YouTube video hook for beginners?", a: "Beginners should start with a 'shocking statistic' or a direct challenge. Our free youtube hook generator for beginners provides 20+ templates that work even if you have zero subscribers." },
+  { q: "Why use a YouTube script hook generator?", a: "Using a youtube script hook generator ensures your video starts with maximum energy. It also helps you rank better for viral youtube opening lines and improves your overall audience retention." }
 ];
 
 // ─── UTILS ─────────────────────────────────────────────────────────────────
@@ -959,9 +959,9 @@ function CommentAISection({ copyToClipboard, copiedId }: any) {
       />
       <div className="text-center space-y-6 max-w-2xl mx-auto">
         <h1 className="text-4xl sm:text-6xl font-extrabold text-white tracking-tight font-display">
-          Comment <span className="text-orange-500">AI</span>
+          Comment <span className="text-orange-500">AI Engagement</span>
         </h1>
-        <p className="text-gray-400 text-lg">Smart engagement replies that build community and boost your algorithmic favor.</p>
+        <p className="text-gray-400 text-lg">Smart engagement replies and youtube script hook ideas that build community and boost your algorithmic favor.</p>
       </div>
 
       <div className="bg-[#111318] border border-white/10 rounded-3xl p-8 max-w-3xl mx-auto shadow-2xl">
@@ -1027,10 +1027,10 @@ function ToolSection({
         <motion.h1 
           className="text-4xl sm:text-6xl font-extrabold text-white tracking-tight leading-tight font-display"
         >
-          Halt the Scroll with <span className="text-orange-500">Viral Hooks</span>
+          #1 <span className="text-orange-500">YouTube Hook Generator</span> for Viral Scripts
         </motion.h1>
         <motion.p className="text-gray-400 text-lg">
-          Stop losing viewers in the first 3 seconds. Transform your niche into an attention magnet.
+          Stop losing viewers in the first 3 seconds. Use our viral hook generator to transform your youtube script hook into an attention magnet.
         </motion.p>
       </div>
 
@@ -1330,8 +1330,8 @@ export default function App() {
             <Route path="/" element={
               <>
                 <SEO 
-                  title="YouTube Hook Generator | Free Viral Hook AI Tool" 
-                  description="Generate 20 scroll-stopping YouTube hooks in seconds. The #1 free AI tool for creators to master viewer retention on YouTube, Shorts, and Reels using psychology-backed script openers." 
+                  title="YouTube Hook Generator | Free Viral YouTube Intro Generator AI" 
+                  description="Generate 20+ viral YouTube hooks in seconds. The #1 free YouTube hook generator and intro generator for creators to master viewer retention on Shorts, and Reels." 
                   schema={{
                     "@context": "https://schema.org",
                     "@type": "FAQPage",
