@@ -30,6 +30,32 @@ export interface GeneratedIdeas {
   }[];
 }
 
+export interface GeneratedChannelNames {
+  names: string[];
+}
+
+export interface GeneratedThumbnailIdeas {
+  suggestions: {
+    text: string;
+    visual: string;
+  }[];
+}
+
+export interface GeneratedScriptOutline {
+  outline: {
+    section: string;
+    description: string;
+    timing: string;
+  }[];
+}
+
+export interface GeneratedCommentReplies {
+  replies: {
+    tone: string;
+    text: string;
+  }[];
+}
+
 export async function generateHooks(topic: string, tone: string, platform: string): Promise<GeneratedHooks> {
   const prompt = `You are a world-class YouTube scriptwriter, viral content strategist, and expert in viewer psychology with deep knowledge of attention retention, scroll-stopping content, and platform-specific engagement patterns.
 
@@ -207,4 +233,122 @@ export async function generateIdeas(niche: string): Promise<GeneratedIdeas> {
   });
 
   return JSON.parse(response.text!.trim()) as GeneratedIdeas;
+}
+
+export async function generateChannelNames(niche: string, keywords: string): Promise<GeneratedChannelNames> {
+  const prompt = `Generate 15 creative, memorable, and brandable YouTube channel names for a channel in the ${niche} niche. Use these keywords: ${keywords}. Focus on names that are easy to spell and pronounce.`;
+
+  const response = await ai.models.generateContent({
+    model: "gemini-3-flash-preview",
+    contents: prompt,
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          names: {
+            type: Type.ARRAY,
+            items: { type: Type.STRING }
+          }
+        },
+        required: ["names"]
+      }
+    }
+  });
+
+  return JSON.parse(response.text!.trim()) as GeneratedChannelNames;
+}
+
+export async function generateThumbnailIdeas(topic: string, title: string): Promise<GeneratedThumbnailIdeas> {
+  const prompt = `Generate 5 creative thumbnail ideas for a YouTube video about "${topic}" with the title "${title}". For each idea, provide high-impact text overlay suggestions (max 4 words) and a description of the visual composition.`;
+
+  const response = await ai.models.generateContent({
+    model: "gemini-3-flash-preview",
+    contents: prompt,
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          suggestions: {
+            type: Type.ARRAY,
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                text: { type: Type.STRING },
+                visual: { type: Type.STRING }
+              },
+              required: ["text", "visual"]
+            }
+          }
+        },
+        required: ["suggestions"]
+      }
+    }
+  });
+
+  return JSON.parse(response.text!.trim()) as GeneratedThumbnailIdeas;
+}
+
+export async function generateScriptOutline(topic: string, title: string): Promise<GeneratedScriptOutline> {
+  const prompt = `Create a detailed YouTube video script outline for a video titled "${title}" about "${topic}". Break it down into sections (Intro, Hook, Body Points, Outro) with timing estimates and key points for each.`;
+
+  const response = await ai.models.generateContent({
+    model: "gemini-3-flash-preview",
+    contents: prompt,
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          outline: {
+            type: Type.ARRAY,
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                section: { type: Type.STRING },
+                description: { type: Type.STRING },
+                timing: { type: Type.STRING }
+              },
+              required: ["section", "description", "timing"]
+            }
+          }
+        },
+        required: ["outline"]
+      }
+    }
+  });
+
+  return JSON.parse(response.text!.trim()) as GeneratedScriptOutline;
+}
+
+export async function generateCommentReplies(comment: string): Promise<GeneratedCommentReplies> {
+  const prompt = `Generate 3 professional and engaging replies to this YouTube comment: "${comment}". Provide one reply that is "Appreciative", one that is "Informative", and one that is "Conversational".`;
+
+  const response = await ai.models.generateContent({
+    model: "gemini-3-flash-preview",
+    contents: prompt,
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          replies: {
+            type: Type.ARRAY,
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                tone: { type: Type.STRING },
+                text: { type: Type.STRING }
+              },
+              required: ["tone", "text"]
+            }
+          }
+        },
+        required: ["replies"]
+      }
+    }
+  });
+
+  return JSON.parse(response.text!.trim()) as GeneratedCommentReplies;
 }

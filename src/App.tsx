@@ -33,7 +33,12 @@ import {
   Lightbulb,
   AlignLeft,
   Settings,
-  ChevronRight
+  ChevronRight,
+  User,
+  Image as ImageIcon,
+  ScrollText,
+  MessageSquare,
+  ArrowDown
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
@@ -42,11 +47,19 @@ import {
   generateDescriptions, 
   generateTags, 
   generateIdeas,
+  generateChannelNames,
+  generateThumbnailIdeas,
+  generateScriptOutline,
+  generateCommentReplies,
   type GeneratedHooks,
   type GeneratedTitles,
   type GeneratedDescriptions,
   type GeneratedTags,
-  type GeneratedIdeas
+  type GeneratedIdeas,
+  type GeneratedChannelNames,
+  type GeneratedThumbnailIdeas,
+  type GeneratedScriptOutline,
+  type GeneratedCommentReplies
 } from "./lib/gemini";
 
 // ─── CONSTANTS ─────────────────────────────────────────────────────────────
@@ -63,6 +76,10 @@ const TOOLS = [
   { id: "descriptions", name: "Description Pro", icon: AlignLeft, description: "SEO-optimized descriptions" },
   { id: "tags", name: "Tag Explorer", icon: Tag, description: "High-ranking video tags" },
   { id: "ideas", name: "Idea Forge", icon: Lightbulb, description: "Next viral video concepts" },
+  { id: "names", name: "Channel Namer", icon: User, description: "Memorable brand names" },
+  { id: "thumbnails", name: "Thumbnail Text", icon: ImageIcon, description: "Suggested overlay text" },
+  { id: "script", name: "Script Outliner", icon: ScrollText, description: "Proper video structure" },
+  { id: "comments", name: "Comment AI", icon: MessageSquare, description: "Smart engagement replies" },
 ];
 
 const CATEGORY_META = {
@@ -633,6 +650,365 @@ function IdeaSection() {
   );
 }
 
+function ChannelNamerSection({ copyToClipboard, copiedId }: any) {
+  const [niche, setNiche] = useState("");
+  const [keywords, setKeywords] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [names, setNames] = useState<string[] | null>(null);
+  const outputRef = useRef<HTMLDivElement>(null);
+
+  const handleGenerate = async () => {
+    if (!niche.trim()) return;
+    setLoading(true);
+    try {
+      const result = await generateChannelNames(niche, keywords);
+      setNames(result.names);
+      setTimeout(() => outputRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-12">
+      <SEO 
+        title="YouTube Channel Name Generator | Creative Brand Names" 
+        description="Find the perfect name for your new YouTube channel. Our AI generates catchy, memorable, and brandable channel names in seconds." 
+      />
+      <div className="text-center space-y-6 max-w-2xl mx-auto">
+        <h1 className="text-4xl sm:text-6xl font-extrabold text-white tracking-tight font-display">
+          Channel <span className="text-orange-500">Namer</span>
+        </h1>
+        <p className="text-gray-400 text-lg">Memorable brand names that stand out in the subscription feed.</p>
+      </div>
+
+      <div className="bg-[#111318] border border-white/10 rounded-3xl p-8 max-w-3xl mx-auto shadow-2xl">
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Channel Niche</label>
+            <input 
+              type="text"
+              value={niche}
+              onChange={(e) => setNiche(e.target.value)}
+              placeholder="e.g. Clean Energy Tech"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 focus:ring-2 focus:ring-orange-500 outline-none text-white"
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Keywords to Include</label>
+            <input 
+              type="text"
+              value={keywords}
+              onChange={(e) => setKeywords(e.target.value)}
+              placeholder="e.g. green, future, spark"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 focus:ring-2 focus:ring-orange-500 outline-none text-white"
+            />
+          </div>
+          <button
+            onClick={handleGenerate}
+            disabled={loading || !niche}
+            className="w-full h-16 bg-orange-500 hover:bg-orange-600 rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 transition-all"
+          >
+            {loading ? <RefreshCw className="animate-spin" /> : <User />}
+            {loading ? "Naming..." : "Generate Channel Names"}
+          </button>
+        </div>
+      </div>
+
+      {names && (
+        <div ref={outputRef} className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-5xl mx-auto">
+          {names.map((name, i) => (
+            <div key={i} className="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center justify-between gap-4 group hover:border-orange-500/30 transition-all">
+              <p className="text-gray-300 font-bold">{name}</p>
+              <button 
+                onClick={() => copyToClipboard(name, `name-${i}`)}
+                className={`p-2 rounded-lg transition-all ${copiedId === `name-${i}` ? "bg-emerald-500/20 text-emerald-500" : "bg-white/5 text-gray-400 hover:text-orange-500"}`}
+              >
+                {copiedId === `name-${i}` ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ThumbnailIdeaSection({ copyToClipboard, copiedId }: any) {
+  const [topic, setTopic] = useState("");
+  const [title, setTitle] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [suggestions, setSuggestions] = useState<GeneratedThumbnailIdeas["suggestions"] | null>(null);
+  const outputRef = useRef<HTMLDivElement>(null);
+
+  const handleGenerate = async () => {
+    if (!topic.trim()) return;
+    setLoading(true);
+    try {
+      const result = await generateThumbnailIdeas(topic, title);
+      setSuggestions(result.suggestions);
+      setTimeout(() => outputRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-12">
+      <SEO 
+        title="YouTube Thumbnail Idea Generator | Viral Thumbnails Design" 
+        description="Stop staring at a blank canvas. Get AI-generated thumbnail text overlays and visual composition ideas that stop the scroll." 
+      />
+      <div className="text-center space-y-6 max-w-2xl mx-auto">
+        <h1 className="text-4xl sm:text-6xl font-extrabold text-white tracking-tight font-display">
+          Thumbnail <span className="text-orange-500">Forge</span>
+        </h1>
+        <p className="text-gray-400 text-lg">Visual strategies and high-impact text that double your click-through rate.</p>
+      </div>
+
+      <div className="bg-[#111318] border border-white/10 rounded-3xl p-8 max-w-3xl mx-auto shadow-2xl">
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Video Topic</label>
+            <input 
+              type="text"
+              value={topic}
+              onChange={(e) => setTopic(e.target.value)}
+              placeholder="e.g. iPhone 15 vs S24 Ultra"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 focus:ring-2 focus:ring-orange-500 outline-none text-white"
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Video Title (optional)</label>
+            <input 
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="e.g. The Truth About the iPhone 15 Camera"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 focus:ring-2 focus:ring-orange-500 outline-none text-white"
+            />
+          </div>
+          <button
+            onClick={handleGenerate}
+            disabled={loading || !topic}
+            className="w-full h-16 bg-orange-500 hover:bg-orange-600 rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 transition-all"
+          >
+            {loading ? <RefreshCw className="animate-spin" /> : <ImageIcon />}
+            {loading ? "Visualizing..." : "Generate Thumbnail Ideas"}
+          </button>
+        </div>
+      </div>
+
+      {suggestions && (
+        <div ref={outputRef} className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          {suggestions.map((s, i) => (
+            <div key={i} className="bg-white/5 border border-white/10 rounded-3xl p-8 space-y-6 hover:border-orange-500/30 transition-all">
+              <div className="flex items-center justify-between">
+                <div className="px-3 py-1 bg-orange-500/10 rounded-lg text-[10px] font-black uppercase text-orange-500 tracking-widest">Concept {i+1}</div>
+                <button 
+                  onClick={() => copyToClipboard(s.text, `thumb-text-${i}`)}
+                  className={`p-2 rounded-lg transition-all ${copiedId === `thumb-text-${i}` ? "bg-emerald-500/20 text-emerald-500" : "bg-white/5 text-gray-400 hover:text-orange-500"}`}
+                >
+                  {copiedId === `thumb-text-${i}` ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                </button>
+              </div>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Text Overlay</p>
+                  <p className="text-2xl font-black text-white italic">"{s.text}"</p>
+                </div>
+                <div className="space-y-2">
+                  <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Visual Composition</p>
+                  <p className="text-gray-400 text-sm leading-relaxed">{s.visual}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ScriptOutlineSection({ copyToClipboard, copiedId }: any) {
+  const [topic, setTopic] = useState("");
+  const [title, setTitle] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [outline, setOutline] = useState<GeneratedScriptOutline["outline"] | null>(null);
+  const outputRef = useRef<HTMLDivElement>(null);
+
+  const handleGenerate = async () => {
+    if (!topic.trim()) return;
+    setLoading(true);
+    try {
+      const result = await generateScriptOutline(topic, title);
+      setOutline(result.outline);
+      setTimeout(() => outputRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-12">
+      <SEO 
+        title="YouTube Script Outliner | Smart Content Roadmap" 
+        description="Structure your videos for maximum retention. Our AI creates detailed script outlines with timing and key points." 
+      />
+      <div className="text-center space-y-6 max-w-2xl mx-auto">
+        <h1 className="text-4xl sm:text-6xl font-extrabold text-white tracking-tight font-display">
+          Script <span className="text-orange-500">Outliner</span>
+        </h1>
+        <p className="text-gray-400 text-lg">Detailed content roadmaps that keep viewers hooked from intro to outro.</p>
+      </div>
+
+      <div className="bg-[#111318] border border-white/10 rounded-3xl p-8 max-w-3xl mx-auto shadow-2xl">
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Video Topic</label>
+            <input 
+              type="text"
+              value={topic}
+              onChange={(e) => setTopic(e.target.value)}
+              placeholder="e.g. How to grow on YouTube as a minimalist"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 focus:ring-2 focus:ring-orange-500 outline-none text-white"
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Target Title (optional)</label>
+            <input 
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="e.g. Minimalist Growth Secret"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 focus:ring-2 focus:ring-orange-500 outline-none text-white"
+            />
+          </div>
+          <button
+            onClick={handleGenerate}
+            disabled={loading || !topic}
+            className="w-full h-16 bg-orange-500 hover:bg-orange-600 rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 transition-all"
+          >
+            {loading ? <RefreshCw className="animate-spin" /> : <ScrollText />}
+            {loading ? "Outlining..." : "Generate Script Outline"}
+          </button>
+        </div>
+      </div>
+
+      {outline && (
+        <div ref={outputRef} className="max-w-4xl mx-auto space-y-6">
+          {outline.map((section, i) => (
+            <div key={i} className="bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col md:flex-row gap-6 hover:border-orange-500/30 transition-all group">
+              <div className="md:w-32 shrink-0">
+                <p className="text-[10px] font-black text-orange-500 uppercase tracking-widest mb-1">{section.timing}</p>
+                <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                  <div className="h-full bg-orange-500/50 w-1/3 group-hover:w-full transition-all duration-700" />
+                </div>
+              </div>
+              <div className="flex-1 space-y-2">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-lg font-bold text-white">{section.section}</h4>
+                  <button 
+                    onClick={() => copyToClipboard(`${section.section}\n${section.description}`, `script-${i}`)}
+                    className={`p-2 rounded-lg transition-all ${copiedId === `script-${i}` ? "bg-emerald-500/20 text-emerald-500" : "bg-white/5 text-gray-500 hover:text-orange-500"}`}
+                  >
+                    {copiedId === `script-${i}` ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                  </button>
+                </div>
+                <p className="text-gray-400 text-sm leading-relaxed">{section.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CommentAISection({ copyToClipboard, copiedId }: any) {
+  const [comment, setComment] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [replies, setReplies] = useState<GeneratedCommentReplies["replies"] | null>(null);
+  const outputRef = useRef<HTMLDivElement>(null);
+
+  const handleGenerate = async () => {
+    if (!comment.trim()) return;
+    setLoading(true);
+    try {
+      const result = await generateCommentReplies(comment);
+      setReplies(result.replies);
+      setTimeout(() => outputRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-12">
+      <SEO 
+        title="YouTube Comment Reply AI | Engagement Assistant" 
+        description="Never leave your fans waiting. Use our AI to generate thoughtful, engaging, and friendly replies to your YouTube comments." 
+      />
+      <div className="text-center space-y-6 max-w-2xl mx-auto">
+        <h1 className="text-4xl sm:text-6xl font-extrabold text-white tracking-tight font-display">
+          Comment <span className="text-orange-500">AI</span>
+        </h1>
+        <p className="text-gray-400 text-lg">Smart engagement replies that build community and boost your algorithmic favor.</p>
+      </div>
+
+      <div className="bg-[#111318] border border-white/10 rounded-3xl p-8 max-w-3xl mx-auto shadow-2xl">
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Target Comment</label>
+            <textarea 
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="Paste the comment here..."
+              rows={4}
+              className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 focus:ring-2 focus:ring-orange-500 outline-none text-white resize-none"
+            />
+          </div>
+          <button
+            onClick={handleGenerate}
+            disabled={loading || !comment}
+            className="w-full h-16 bg-orange-500 hover:bg-orange-600 rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 transition-all"
+          >
+            {loading ? <RefreshCw className="animate-spin" /> : <MessageSquare />}
+            {loading ? "Drafting..." : "Generate Smart Replies"}
+          </button>
+        </div>
+      </div>
+
+      {replies && (
+        <div ref={outputRef} className="max-w-4xl mx-auto grid gap-6">
+          {replies.map((reply, i) => (
+            <div key={i} className="bg-white/5 border border-white/10 rounded-3xl p-8 space-y-4 hover:border-orange-500/30 transition-all relative group">
+              <div className="flex items-center justify-between">
+                <div className="px-3 py-1 bg-white/5 rounded-lg text-[10px] font-black uppercase text-gray-500 tracking-widest group-hover:text-orange-500 transition-colors">{reply.tone} Reply</div>
+                <button 
+                  onClick={() => copyToClipboard(reply.text, `reply-${i}`)}
+                  className={`p-2 rounded-lg transition-all ${copiedId === `reply-${i}` ? "bg-emerald-500 text-white" : "bg-white/10 text-gray-400 hover:bg-orange-500 hover:text-white"}`}
+                >
+                  {copiedId === `reply-${i}` ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                </button>
+              </div>
+              <p className="text-gray-300 leading-relaxed italic">"{reply.text}"</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function ToolSection({ 
   topic, setTopic, tone, setTone, platform, setPlatform, handleGenerate, loading, hooks, outputRef, CATEGORY_META, copyToClipboard, copiedId 
 }: any) {
@@ -1047,6 +1423,10 @@ export default function App() {
             <Route path="/tool-descriptions" element={<DescriptionSection copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
             <Route path="/tool-tags" element={<TagSection copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
             <Route path="/tool-ideas" element={<IdeaSection />} />
+            <Route path="/tool-names" element={<ChannelNamerSection copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
+            <Route path="/tool-thumbnails" element={<ThumbnailIdeaSection copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
+            <Route path="/tool-script" element={<ScriptOutlineSection copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
+            <Route path="/tool-comments" element={<CommentAISection copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
             <Route path="/hooks-for-:nicheId" element={<NichePage copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
           </Routes>
         </main>
