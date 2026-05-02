@@ -247,7 +247,7 @@ const FAQS = [
 ];
 
 // ─── UTILS ─────────────────────────────────────────────────────────────────
-const PRODUCTION_URL = "https://scripthookgenerate.vercel.app";
+const PRODUCTION_URL = "https://scripthook.vercel.app";
 
 function SEO({ title, description, schema }: { title: string; description: string; schema?: any }) {
   const location = useLocation();
