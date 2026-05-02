@@ -1,6 +1,19 @@
 import { GoogleGenAI, Type } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+let aiInstance: GoogleGenAI | null = null;
+
+function getAI() {
+  if (!aiInstance) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      // In case the define failed or env is missing
+      console.error("GEMINI_API_KEY is missing. Please configure it in your environment variables.");
+      // We return a dummy or throw later to avoid breaking the whole app at load time
+    }
+    aiInstance = new GoogleGenAI({ apiKey: apiKey || "" });
+  }
+  return aiInstance;
+}
 
 export interface GeneratedHooks {
   viral: string[];
@@ -56,99 +69,54 @@ export interface GeneratedCommentReplies {
   }[];
 }
 
-export async function generateHooks(topic: string, tone: string, platform: string): Promise<GeneratedHooks> {
-  const prompt = `You are a world-class YouTube scriptwriter, viral content strategist, and expert in viewer psychology with deep knowledge of attention retention, scroll-stopping content, and platform-specific engagement patterns.
+const MODEL_NAME = "gemini-3-flash-preview";
 
-USER INPUT
+export async function generateHooks(topic: string, tone: string, platform: string): Promise<GeneratedHooks> {
+  const ai = getAI();
+  const prompt = `You are a world-class YouTube scriptwriter, viral content strategist, and expert in viewer psychology.
 Topic/Niche: ${topic}
 Tone: ${tone}
 Platform: ${platform}
 
-YOUR TASK
-Generate exactly 20 high-impact, scroll-stopping hooks for the topic above, divided into 5 psychology-driven categories. Every hook must feel like it was written by a top human creator — not an AI. Every hook must be under 30 words. Every hook must be specific to the topic, not generic.
-
-PSYCHOLOGY FRAMEWORK TO APPLY
-Apply one or more of these psychological triggers to EVERY single hook:
-1. CURIOSITY GAP — Make the viewer feel they are missing critical, life-changing, or surprising information.
-2. FOMO (Fear Of Missing Out) — Make them feel that not watching means losing money, opportunity, time, status, or knowledge.
-3. PATTERN INTERRUPT — Start with something unexpected, counterintuitive, or paradoxical.
-4. SOCIAL PROOF + AUTHORITY — Use scale, numbers, success stories, or expert consensus to create credibility.
-5. URGENCY + HIGH STAKES — Create a sense that the window is closing or the cost of inaction is high.
-6. NARRATIVE LOOP (for Storytelling hooks) — Open a story that cannot psychologically be left incomplete.
-7. DIRECT CHALLENGE (for Aggressive tone) — Challenge the viewer's current belief, behavior, or identity directly.
-
-PLATFORM-SPECIFIC RULES
-If Platform = YouTube (long-form): Hooks can be slightly longer (20-30 words). Can include setup + payoff.
-If Platform = YouTube Shorts: Maximum 15 words. Hit in the first two words.
-If Platform = Instagram Reels: Under 12 words ideal.
-
-ABSOLUTE RULES
-- NEVER start with "In this video...", "Today I will...", etc.
-- NEVER be vague or generic.
-- Match the energy of ${tone}.
-- Optimize length for ${platform}.`;
+Generate exactly 20 high-impact hooks divided into 5 psychology-driven categories. Each hook must be under 30 words.
+Categories: viral (10), curiosity (3), emotional (3), shocking (2), storytelling (2).`;
 
   const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
+    model: MODEL_NAME,
     contents: prompt,
     config: {
       responseMimeType: "application/json",
       responseSchema: {
         type: Type.OBJECT,
         properties: {
-          viral: {
-            type: Type.ARRAY,
-            items: { type: Type.STRING },
-            description: "10 viral hooks that feel like they could trend"
-          },
-          curiosity: {
-            type: Type.ARRAY,
-            items: { type: Type.STRING },
-            description: "3 hooks creating a curiosity gap"
-          },
-          emotional: {
-            type: Type.ARRAY,
-            items: { type: Type.STRING },
-            description: "3 hooks triggering empathy or connection"
-          },
-          shocking: {
-            type: Type.ARRAY,
-            items: { type: Type.STRING },
-            description: "2 hooks using surprising facts or stats"
-          },
-          storytelling: {
-            type: Type.ARRAY,
-            items: { type: Type.STRING },
-            description: "2 hooks opening a narrative loop"
-          }
+          viral: { type: Type.ARRAY, items: { type: Type.STRING } },
+          curiosity: { type: Type.ARRAY, items: { type: Type.STRING } },
+          emotional: { type: Type.ARRAY, items: { type: Type.STRING } },
+          shocking: { type: Type.ARRAY, items: { type: Type.STRING } },
+          storytelling: { type: Type.ARRAY, items: { type: Type.STRING } }
         },
         required: ["viral", "curiosity", "emotional", "shocking", "storytelling"]
       }
     }
   });
 
-  if (!response.text) {
-    throw new Error("No response from Gemini");
-  }
-
+  if (!response.text) throw new Error("No response from Gemini");
   return JSON.parse(response.text.trim()) as GeneratedHooks;
 }
 
 export async function generateTitles(topic: string): Promise<GeneratedTitles> {
-  const prompt = `Generate 10 highly clickable, viral YouTube titles for the topic: ${topic}. Focus on CTR, curiosity, and high-impact words. Use Title Case. Avoid clickbait that doesn't deliver.`;
+  const ai = getAI();
+  const prompt = `Generate 10 highly clickable, viral YouTube titles for the topic: ${topic}. Focus on CTR and curiosity. Output exactly 10.`;
 
   const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
+    model: MODEL_NAME,
     contents: prompt,
     config: {
       responseMimeType: "application/json",
       responseSchema: {
         type: Type.OBJECT,
         properties: {
-          titles: {
-            type: Type.ARRAY,
-            items: { type: Type.STRING }
-          }
+          titles: { type: Type.ARRAY, items: { type: Type.STRING } }
         },
         required: ["titles"]
       }
@@ -159,10 +127,11 @@ export async function generateTitles(topic: string): Promise<GeneratedTitles> {
 }
 
 export async function generateDescriptions(topic: string, keywords: string): Promise<GeneratedDescriptions> {
-  const prompt = `Write a professional, SEO-optimized YouTube video description for a video about "${topic}". Include these keywords: ${keywords}. Structure it with an engaging intro, timestamps placeholder, and relevant links/hashtags.`;
+  const ai = getAI();
+  const prompt = `Write a professional, SEO-optimized YouTube video description for a video about "${topic}". Keywords: ${keywords}. Include timestamps placeholder and hashtags.`;
 
   const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
+    model: MODEL_NAME,
     contents: prompt,
     config: {
       responseMimeType: "application/json",
@@ -180,20 +149,18 @@ export async function generateDescriptions(topic: string, keywords: string): Pro
 }
 
 export async function generateTags(topic: string): Promise<GeneratedTags> {
-  const prompt = `Generate 30 relevant, high-search-volume tags for a YouTube video about: ${topic}. Output as an array of strings.`;
+  const ai = getAI();
+  const prompt = `Generate 30 relevant, high-search-volume tags for a YouTube video about: ${topic}.`;
 
   const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
+    model: MODEL_NAME,
     contents: prompt,
     config: {
       responseMimeType: "application/json",
       responseSchema: {
         type: Type.OBJECT,
         properties: {
-          tags: {
-            type: Type.ARRAY,
-            items: { type: Type.STRING }
-          }
+          tags: { type: Type.ARRAY, items: { type: Type.STRING } }
         },
         required: ["tags"]
       }
@@ -204,10 +171,11 @@ export async function generateTags(topic: string): Promise<GeneratedTags> {
 }
 
 export async function generateIdeas(niche: string): Promise<GeneratedIdeas> {
-  const prompt = `Generate 5 viral video ideas for the ${niche} niche. For each idea, provide a clickable title, a brief concept description, and a thumbnail idea.`;
+  const ai = getAI();
+  const prompt = `Generate 5 viral video ideas for the ${niche} niche. Include title, concept, and thumbnail idea.`;
 
   const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
+    model: MODEL_NAME,
     contents: prompt,
     config: {
       responseMimeType: "application/json",
@@ -236,20 +204,18 @@ export async function generateIdeas(niche: string): Promise<GeneratedIdeas> {
 }
 
 export async function generateChannelNames(niche: string, keywords: string): Promise<GeneratedChannelNames> {
-  const prompt = `Generate 15 creative, memorable, and brandable YouTube channel names for a channel in the ${niche} niche. Use these keywords: ${keywords}. Focus on names that are easy to spell and pronounce.`;
+  const ai = getAI();
+  const prompt = `Generate 15 creative YouTube channel names for a channel in the ${niche} niche. Keywords: ${keywords}.`;
 
   const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
+    model: MODEL_NAME,
     contents: prompt,
     config: {
       responseMimeType: "application/json",
       responseSchema: {
         type: Type.OBJECT,
         properties: {
-          names: {
-            type: Type.ARRAY,
-            items: { type: Type.STRING }
-          }
+          names: { type: Type.ARRAY, items: { type: Type.STRING } }
         },
         required: ["names"]
       }
@@ -260,10 +226,11 @@ export async function generateChannelNames(niche: string, keywords: string): Pro
 }
 
 export async function generateThumbnailIdeas(topic: string, title: string): Promise<GeneratedThumbnailIdeas> {
-  const prompt = `Generate 5 creative thumbnail ideas for a YouTube video about "${topic}" with the title "${title}". For each idea, provide high-impact text overlay suggestions (max 4 words) and a description of the visual composition.`;
+  const ai = getAI();
+  const prompt = `Generate 5 creative thumbnail ideas for a YouTube video about "${topic}" (Title: "${title}"). Include text overlay and visual description.`;
 
   const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
+    model: MODEL_NAME,
     contents: prompt,
     config: {
       responseMimeType: "application/json",
@@ -291,10 +258,11 @@ export async function generateThumbnailIdeas(topic: string, title: string): Prom
 }
 
 export async function generateScriptOutline(topic: string, title: string): Promise<GeneratedScriptOutline> {
-  const prompt = `Create a detailed YouTube video script outline for a video titled "${title}" about "${topic}". Break it down into sections (Intro, Hook, Body Points, Outro) with timing estimates and key points for each.`;
+  const ai = getAI();
+  const prompt = `Create a YouTube video script outline for "${title}" about "${topic}". Include sections with timing and description.`;
 
   const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
+    model: MODEL_NAME,
     contents: prompt,
     config: {
       responseMimeType: "application/json",
@@ -323,10 +291,11 @@ export async function generateScriptOutline(topic: string, title: string): Promi
 }
 
 export async function generateCommentReplies(comment: string): Promise<GeneratedCommentReplies> {
-  const prompt = `Generate 3 professional and engaging replies to this YouTube comment: "${comment}". Provide one reply that is "Appreciative", one that is "Informative", and one that is "Conversational".`;
+  const ai = getAI();
+  const prompt = `Generate 3 professional replies to this YouTube comment: "${comment}". Tones: Appreciative, Informative, Conversational.`;
 
   const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
+    model: MODEL_NAME,
     contents: prompt,
     config: {
       responseMimeType: "application/json",
