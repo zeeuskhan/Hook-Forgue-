@@ -27,10 +27,27 @@ import {
   ChevronDown,
   Info,
   Globe,
-  Share2
+  Share2,
+  Type as TypeIcon,
+  Tag,
+  Lightbulb,
+  AlignLeft,
+  Settings,
+  ChevronRight
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { generateHooks, type GeneratedHooks } from "./lib/gemini";
+import { 
+  generateHooks, 
+  generateTitles, 
+  generateDescriptions, 
+  generateTags, 
+  generateIdeas,
+  type GeneratedHooks,
+  type GeneratedTitles,
+  type GeneratedDescriptions,
+  type GeneratedTags,
+  type GeneratedIdeas
+} from "./lib/gemini";
 
 // ─── CONSTANTS ─────────────────────────────────────────────────────────────
 const TONES = ["Viral", "Emotional", "Storytelling", "Aggressive", "Curiosity"];
@@ -38,6 +55,14 @@ const PLATFORMS = [
   { id: "YouTube", icon: Youtube },
   { id: "YouTube Shorts", icon: Clapperboard },
   { id: "Instagram Reels", icon: Instagram }
+];
+
+const TOOLS = [
+  { id: "hooks", name: "Hook Generator", icon: Zap, description: "Viral hooks for your scripts" },
+  { id: "titles", name: "Title Generator", icon: TypeIcon, description: "Click-worthy video titles" },
+  { id: "descriptions", name: "Description Pro", icon: AlignLeft, description: "SEO-optimized descriptions" },
+  { id: "tags", name: "Tag Explorer", icon: Tag, description: "High-ranking video tags" },
+  { id: "ideas", name: "Idea Forge", icon: Lightbulb, description: "Next viral video concepts" },
 ];
 
 const CATEGORY_META = {
@@ -283,6 +308,327 @@ function CollapsibleFAQ({ faq }: { faq: { q: string; a: string }, key?: any }) {
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  );
+}
+
+function TitleSection({ copyToClipboard, copiedId }: any) {
+  const [topic, setTopic] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [titles, setTitles] = useState<string[] | null>(null);
+  const outputRef = useRef<HTMLDivElement>(null);
+
+  const handleGenerate = async () => {
+    if (!topic.trim()) return;
+    setLoading(true);
+    try {
+      const result = await generateTitles(topic);
+      setTitles(result.titles);
+      setTimeout(() => outputRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-12">
+      <SEO 
+        title="YouTube Title Generator | Viral Video Titles with AI" 
+        description="Create high-CTR YouTube titles that grab attention. Our AI analyzes your topic and crafts titles that work for the 2025 algorithm." 
+      />
+      <div className="text-center space-y-6 max-w-2xl mx-auto">
+        <h1 className="text-4xl sm:text-6xl font-extrabold text-white tracking-tight font-display">
+          Viral <span className="text-orange-500">Title Generator</span>
+        </h1>
+        <p className="text-gray-400 text-lg">Click-worthy titles that spark curiosity and boost your CTR by up to 30%.</p>
+      </div>
+
+      <div className="bg-[#111318] border border-white/10 rounded-3xl p-8 max-w-3xl mx-auto shadow-2xl">
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Video Topic</label>
+            <input 
+              type="text"
+              value={topic}
+              onChange={(e) => setTopic(e.target.value)}
+              placeholder="e.g. My $10,000 Portfolio Review"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 focus:ring-2 focus:ring-orange-500 outline-none text-white"
+            />
+          </div>
+          <button
+            onClick={handleGenerate}
+            disabled={loading || !topic}
+            className="w-full h-16 bg-orange-500 hover:bg-orange-600 rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 transition-all"
+          >
+            {loading ? <RefreshCw className="animate-spin" /> : <Sparkles />}
+            {loading ? "Generating..." : "Forge Viral Titles"}
+          </button>
+        </div>
+      </div>
+
+      {titles && (
+        <div ref={outputRef} className="grid sm:grid-cols-2 gap-4 max-w-5xl mx-auto">
+          {titles.map((title, i) => (
+            <div key={i} className="bg-white/5 border border-white/10 rounded-2xl p-4 flex items-center justify-between gap-4 group hover:border-orange-500/30 transition-all">
+              <p className="text-gray-300 font-medium">{title}</p>
+              <button 
+                onClick={() => copyToClipboard(title, `title-${i}`)}
+                className={`p-2 rounded-lg transition-all ${copiedId === `title-${i}` ? "bg-emerald-500/20 text-emerald-500" : "bg-white/5 text-gray-400 hover:text-orange-500"}`}
+              >
+                {copiedId === `title-${i}` ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DescriptionSection({ copyToClipboard, copiedId }: any) {
+  const [topic, setTopic] = useState("");
+  const [keywords, setKeywords] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [description, setDescription] = useState<string | null>(null);
+  const outputRef = useRef<HTMLDivElement>(null);
+
+  const handleGenerate = async () => {
+    if (!topic.trim()) return;
+    setLoading(true);
+    try {
+      const result = await generateDescriptions(topic, keywords);
+      setDescription(result.description);
+      setTimeout(() => outputRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-12">
+      <SEO 
+        title="YouTube Description Generator | SEO-Friendly Video Decs" 
+        description="Generate professional, SEO-optimized YouTube descriptions in seconds. Boost your video search rankings with keywords and structured data." 
+      />
+      <div className="text-center space-y-6 max-w-2xl mx-auto">
+        <h1 className="text-4xl sm:text-6xl font-extrabold text-white tracking-tight font-display">
+          Description <span className="text-orange-500">Pro</span>
+        </h1>
+        <p className="text-gray-400 text-lg">SEO-optimized descriptions that help you rank higher on YouTube and Google Search.</p>
+      </div>
+
+      <div className="bg-[#111318] border border-white/10 rounded-3xl p-8 max-w-3xl mx-auto shadow-2xl">
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Video Title/Topic</label>
+            <input 
+              type="text"
+              value={topic}
+              onChange={(e) => setTopic(e.target.value)}
+              placeholder="e.g. How to get more views as a small creator"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 focus:ring-2 focus:ring-orange-500 outline-none text-white"
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Target Keywords (optional)</label>
+            <input 
+              type="text"
+              value={keywords}
+              onChange={(e) => setKeywords(e.target.value)}
+              placeholder="e.g. youtube views, creator tips, growth"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 focus:ring-2 focus:ring-orange-500 outline-none text-white"
+            />
+          </div>
+          <button
+            onClick={handleGenerate}
+            disabled={loading || !topic}
+            className="w-full h-16 bg-orange-500 hover:bg-orange-600 rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 transition-all"
+          >
+            {loading ? <RefreshCw className="animate-spin" /> : <AlignLeft />}
+            {loading ? "Writing Description..." : "Generate Description"}
+          </button>
+        </div>
+      </div>
+
+      {description && (
+        <div ref={outputRef} className="max-w-3xl mx-auto bg-white/5 border border-white/10 rounded-3xl p-8 relative group">
+          <button 
+            onClick={() => copyToClipboard(description, "desc")}
+            className={`absolute top-4 right-4 p-3 rounded-xl transition-all ${copiedId === "desc" ? "bg-emerald-500 text-white" : "bg-white/10 text-gray-400 hover:bg-orange-500 hover:text-white"}`}
+          >
+            {copiedId === "desc" ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
+          </button>
+          <div className="prose prose-invert max-w-none prose-sm whitespace-pre-wrap leading-relaxed text-gray-300">
+            {description}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function TagSection({ copyToClipboard, copiedId }: any) {
+  const [topic, setTopic] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [tags, setTags] = useState<string[] | null>(null);
+  const outputRef = useRef<HTMLDivElement>(null);
+
+  const handleGenerate = async () => {
+    if (!topic.trim()) return;
+    setLoading(true);
+    try {
+      const result = await generateTags(topic);
+      setTags(result.tags);
+      setTimeout(() => outputRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-12">
+      <SEO 
+        title="YouTube Tag Generator | Free Keyword Tool for YT" 
+        description="Find high-search volume tags for your YouTube videos. Improve your discoverability with AI-recommended keywords." 
+      />
+      <div className="text-center space-y-6 max-w-2xl mx-auto">
+        <h1 className="text-4xl sm:text-6xl font-extrabold text-white tracking-tight font-display">
+          Tag <span className="text-orange-500">Explorer</span>
+        </h1>
+        <p className="text-gray-400 text-lg">Uncover the tags that power the top search results for your niche.</p>
+      </div>
+
+      <div className="bg-[#111318] border border-white/10 rounded-3xl p-8 max-w-3xl mx-auto shadow-2xl">
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Video Topic</label>
+            <input 
+              type="text"
+              value={topic}
+              onChange={(e) => setTopic(e.target.value)}
+              placeholder="e.g. Best budget cameras 2025"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 focus:ring-2 focus:ring-orange-500 outline-none text-white"
+            />
+          </div>
+          <button
+            onClick={handleGenerate}
+            disabled={loading || !topic}
+            className="w-full h-16 bg-orange-500 hover:bg-orange-600 rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 transition-all"
+          >
+            {loading ? <RefreshCw className="animate-spin" /> : <Tag />}
+            {loading ? "Exploring Tags..." : "Generate Tags"}
+          </button>
+        </div>
+      </div>
+
+      {tags && (
+        <div ref={outputRef} className="max-w-4xl mx-auto space-y-8">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-bold text-white">Recommended Tags</h3>
+            <button 
+              onClick={() => copyToClipboard(tags.join(", "), "all-tags")}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all ${copiedId === "all-tags" ? "bg-emerald-500 text-white" : "bg-white/5 text-gray-400 hover:text-white hover:bg-orange-500"}`}
+            >
+              {copiedId === "all-tags" ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+              {copiedId === "all-tags" ? "Copied All" : "Copy All Tags"}
+            </button>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {tags.map((tag, i) => (
+              <button
+                key={i}
+                onClick={() => copyToClipboard(tag, `tag-${i}`)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium border border-white/10 transition-all ${copiedId === `tag-${i}` ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-500" : "bg-white/5 text-gray-400 hover:border-orange-500 hover:text-white"}`}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function IdeaSection() {
+  const [niche, setNiche] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [ideas, setIdeas] = useState<GeneratedIdeas["ideas"] | null>(null);
+  const outputRef = useRef<HTMLDivElement>(null);
+
+  const handleGenerate = async () => {
+    if (!niche.trim()) return;
+    setLoading(true);
+    try {
+      const result = await generateIdeas(niche);
+      setIdeas(result.ideas);
+      setTimeout(() => outputRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-12">
+      <SEO 
+        title="YouTube Video Idea Generator | Viral Content Inspo" 
+        description="Never run out of video ideas again. Use our AI to generate viral concepts, title ideas, and thumbnail strategies for your YouTube channel." 
+      />
+      <div className="text-center space-y-6 max-w-2xl mx-auto">
+        <h1 className="text-4xl sm:text-6xl font-extrabold text-white tracking-tight font-display">
+          Idea <span className="text-orange-500">Forge</span>
+        </h1>
+        <p className="text-gray-400 text-lg">Next-level video concepts designed to build a die-hard audience from scratch.</p>
+      </div>
+
+      <div className="bg-[#111318] border border-white/10 rounded-3xl p-8 max-w-3xl mx-auto shadow-2xl">
+        <div className="space-y-6">
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Channel Niche / Topic</label>
+            <input 
+              type="text"
+              value={niche}
+              onChange={(e) => setNiche(e.target.value)}
+              placeholder="e.g. Minimalist Travel Photography"
+              className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 focus:ring-2 focus:ring-orange-500 outline-none text-white"
+            />
+          </div>
+          <button
+            onClick={handleGenerate}
+            disabled={loading || !niche}
+            className="w-full h-16 bg-orange-500 hover:bg-orange-600 rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 transition-all"
+          >
+            {loading ? <RefreshCw className="animate-spin" /> : <Lightbulb />}
+            {loading ? "Forging Ideas..." : "Generate Viral Ideas"}
+          </button>
+        </div>
+      </div>
+
+      {ideas && (
+        <div ref={outputRef} className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          {ideas.map((idea, i) => (
+            <div key={i} className="bg-white/5 border border-white/10 rounded-3xl p-8 space-y-4 hover:border-orange-500/30 transition-all flex flex-col h-full">
+              <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center">
+                <Sparkles className="w-6 h-6 text-orange-500" />
+              </div>
+              <h3 className="text-xl font-bold text-white">{idea.title}</h3>
+              <p className="text-gray-400 text-sm leading-relaxed flex-1">{idea.description}</p>
+              <div className="pt-4 border-t border-white/5">
+                <p className="text-[10px] font-bold text-orange-500 uppercase tracking-widest mb-2">Thumbnail Strategy</p>
+                <p className="text-xs text-gray-500 italic">"{idea.thumbnail}"</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -553,22 +899,36 @@ export default function App() {
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-rose-500 flex items-center justify-center transition-transform group-hover:scale-110">
                   <Zap className="w-5 h-5 text-white" />
                 </div>
-                <span className="text-xl font-bold tracking-tight text-white font-display">
-                  HookForge <span className="text-orange-500">AI</span>
-                </span>
+                <div className="flex flex-col -space-y-1">
+                  <span className="text-lg font-bold tracking-tight text-white font-display">
+                    HookForge <span className="text-orange-500">AI</span>
+                  </span>
+                  <span className="text-[8px] font-black uppercase text-gray-600 tracking-[0.2em]">Creator Tools</span>
+                </div>
               </Link>
+              
               <div className="hidden lg:flex items-center gap-6">
                 <div className="flex items-center gap-1 bg-white/5 p-1 rounded-xl border border-white/10">
-                  {NICHE_PAGES.map(page => (
+                  {TOOLS.map(tool => (
                     <Link 
-                      key={page.id} 
-                      to={`/hooks-for-${page.id}`}
-                      className="px-3 py-1.5 rounded-lg text-xs font-bold text-gray-500 hover:text-white hover:bg-white/5 transition-all uppercase tracking-tighter"
+                      key={tool.id} 
+                      to={tool.id === "hooks" ? "/" : `/tool-${tool.id}`}
+                      className={`px-4 py-1.5 rounded-lg text-[10px] font-bold transition-all uppercase tracking-wider flex items-center gap-2 ${
+                        (tool.id === "hooks" && location.pathname === "/") || location.pathname === `/tool-${tool.id}`
+                        ? "bg-orange-500 text-white shadow-lg"
+                        : "text-gray-500 hover:text-white hover:bg-white/5"
+                      }`}
                     >
-                      {page.id.split("-")[0]}
+                      <tool.icon className="w-3 h-3" />
+                      {tool.name.split(" ")[0]}
                     </Link>
                   ))}
                 </div>
+              </div>
+
+              <div className="lg:hidden flex items-center gap-2">
+                {/* Mobile Menu Placeholder - simplified */}
+                <Link to="/" className="p-2 rounded-lg bg-white/5 text-gray-500"><Layout className="w-5 h-5"/></Link>
               </div>
             </div>
           </div>
@@ -620,6 +980,32 @@ export default function App() {
                   ))}
                 </div>
                 
+                {/* Tool Grid */}
+                <div className="mt-32 space-y-12">
+                  <div className="text-center space-y-4">
+                    <h2 className="text-3xl font-bold text-white">Pro Creator <span className="text-orange-500">Suite</span></h2>
+                    <p className="text-gray-500">Everything you need to grow your channel from zero to viral.</p>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {TOOLS.filter(t => t.id !== "hooks").map(tool => (
+                      <Link 
+                        key={tool.id} 
+                        to={`/tool-${tool.id}`}
+                        className="bg-[#111318] border border-white/5 rounded-3xl p-8 hover:border-orange-500/40 transition-all group"
+                      >
+                        <div className="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                          <tool.icon className="w-6 h-6 text-orange-500" />
+                        </div>
+                        <h3 className="text-lg font-bold text-white mb-2">{tool.name}</h3>
+                        <p className="text-sm text-gray-500 leading-relaxed mb-6">{tool.description}</p>
+                        <div className="flex items-center gap-2 text-xs font-bold text-gray-700 uppercase tracking-widest group-hover:text-orange-500 transition-colors">
+                          Try Tool <ArrowRight className="w-3 h-3" />
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+
                 {/* FAQ & Bottom Content */}
                 <div className="mt-32 space-y-20 border-t border-white/5 pt-20">
                   <section className="grid lg:grid-cols-3 gap-12">
@@ -657,6 +1043,10 @@ export default function App() {
                 </div>
               </>
             } />
+            <Route path="/tool-titles" element={<TitleSection copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
+            <Route path="/tool-descriptions" element={<DescriptionSection copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
+            <Route path="/tool-tags" element={<TagSection copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
+            <Route path="/tool-ideas" element={<IdeaSection />} />
             <Route path="/hooks-for-:nicheId" element={<NichePage copyToClipboard={copyToClipboard} copiedId={copiedId} />} />
           </Routes>
         </main>
@@ -673,6 +1063,16 @@ export default function App() {
                 Empowering storytellers to win the war for attention. 
                 Optimized for the 2025 creator economy.
               </p>
+            </div>
+            <div className="space-y-4">
+              <h4 className="text-sm font-bold text-white uppercase tracking-widest text-orange-500">Free Tools</h4>
+              <nav className="flex flex-col gap-2">
+                {TOOLS.map(t => (
+                  <Link key={t.id} to={t.id === "hooks" ? "/" : `/tool-${t.id}`} className="text-gray-500 hover:text-white text-sm transition-colors">
+                    {t.name}
+                  </Link>
+                ))}
+              </nav>
             </div>
             <div className="space-y-4">
               <h4 className="text-sm font-bold text-white uppercase tracking-widest text-orange-500">Niche Guides</h4>

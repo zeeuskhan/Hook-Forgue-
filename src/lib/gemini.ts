@@ -10,6 +10,26 @@ export interface GeneratedHooks {
   storytelling: string[];
 }
 
+export interface GeneratedTitles {
+  titles: string[];
+}
+
+export interface GeneratedDescriptions {
+  description: string;
+}
+
+export interface GeneratedTags {
+  tags: string[];
+}
+
+export interface GeneratedIdeas {
+  ideas: {
+    title: string;
+    description: string;
+    thumbnail: string;
+  }[];
+}
+
 export async function generateHooks(topic: string, tone: string, platform: string): Promise<GeneratedHooks> {
   const prompt = `You are a world-class YouTube scriptwriter, viral content strategist, and expert in viewer psychology with deep knowledge of attention retention, scroll-stopping content, and platform-specific engagement patterns.
 
@@ -86,4 +106,105 @@ ABSOLUTE RULES
   }
 
   return JSON.parse(response.text.trim()) as GeneratedHooks;
+}
+
+export async function generateTitles(topic: string): Promise<GeneratedTitles> {
+  const prompt = `Generate 10 highly clickable, viral YouTube titles for the topic: ${topic}. Focus on CTR, curiosity, and high-impact words. Use Title Case. Avoid clickbait that doesn't deliver.`;
+
+  const response = await ai.models.generateContent({
+    model: "gemini-3-flash-preview",
+    contents: prompt,
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          titles: {
+            type: Type.ARRAY,
+            items: { type: Type.STRING }
+          }
+        },
+        required: ["titles"]
+      }
+    }
+  });
+
+  return JSON.parse(response.text!.trim()) as GeneratedTitles;
+}
+
+export async function generateDescriptions(topic: string, keywords: string): Promise<GeneratedDescriptions> {
+  const prompt = `Write a professional, SEO-optimized YouTube video description for a video about "${topic}". Include these keywords: ${keywords}. Structure it with an engaging intro, timestamps placeholder, and relevant links/hashtags.`;
+
+  const response = await ai.models.generateContent({
+    model: "gemini-3-flash-preview",
+    contents: prompt,
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          description: { type: Type.STRING }
+        },
+        required: ["description"]
+      }
+    }
+  });
+
+  return JSON.parse(response.text!.trim()) as GeneratedDescriptions;
+}
+
+export async function generateTags(topic: string): Promise<GeneratedTags> {
+  const prompt = `Generate 30 relevant, high-search-volume tags for a YouTube video about: ${topic}. Output as an array of strings.`;
+
+  const response = await ai.models.generateContent({
+    model: "gemini-3-flash-preview",
+    contents: prompt,
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          tags: {
+            type: Type.ARRAY,
+            items: { type: Type.STRING }
+          }
+        },
+        required: ["tags"]
+      }
+    }
+  });
+
+  return JSON.parse(response.text!.trim()) as GeneratedTags;
+}
+
+export async function generateIdeas(niche: string): Promise<GeneratedIdeas> {
+  const prompt = `Generate 5 viral video ideas for the ${niche} niche. For each idea, provide a clickable title, a brief concept description, and a thumbnail idea.`;
+
+  const response = await ai.models.generateContent({
+    model: "gemini-3-flash-preview",
+    contents: prompt,
+    config: {
+      responseMimeType: "application/json",
+      responseSchema: {
+        type: Type.OBJECT,
+        properties: {
+          ideas: {
+            type: Type.ARRAY,
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                title: { type: Type.STRING },
+                description: { type: Type.STRING },
+                thumbnail: { type: Type.STRING }
+              },
+              required: ["title", "description", "thumbnail"]
+            }
+          }
+        },
+        required: ["ideas"]
+      }
+    }
+  });
+
+  return JSON.parse(response.text!.trim()) as GeneratedIdeas;
 }
