@@ -71,6 +71,15 @@ export interface GeneratedCommentReplies {
 
 const MODEL_NAME = "gemini-3-flash-preview";
 
+function cleanJSON(text: string): string {
+  // Remove markdown code blocks if present
+  let cleaned = text.trim();
+  if (cleaned.startsWith("```")) {
+    cleaned = cleaned.replace(/^```[a-z]*\n/i, "").replace(/\n```$/m, "");
+  }
+  return cleaned.trim();
+}
+
 export async function generateHooks(topic: string, tone: string, platform: string): Promise<GeneratedHooks> {
   const ai = getAI();
   const prompt = `You are a world-class YouTube scriptwriter, viral content strategist, and expert in viewer psychology.
@@ -101,7 +110,7 @@ Categories: viral (10), curiosity (3), emotional (3), shocking (2), storytelling
   });
 
   if (!response.text) throw new Error("No response from Gemini");
-  return JSON.parse(response.text.trim()) as GeneratedHooks;
+  return JSON.parse(cleanJSON(response.text)) as GeneratedHooks;
 }
 
 export async function generateTitles(topic: string): Promise<GeneratedTitles> {
@@ -123,7 +132,8 @@ export async function generateTitles(topic: string): Promise<GeneratedTitles> {
     }
   });
 
-  return JSON.parse(response.text!.trim()) as GeneratedTitles;
+  if (!response.text) throw new Error("No response from Gemini");
+  return JSON.parse(cleanJSON(response.text)) as GeneratedTitles;
 }
 
 export async function generateDescriptions(topic: string, keywords: string): Promise<GeneratedDescriptions> {
@@ -145,7 +155,8 @@ export async function generateDescriptions(topic: string, keywords: string): Pro
     }
   });
 
-  return JSON.parse(response.text!.trim()) as GeneratedDescriptions;
+  if (!response.text) throw new Error("No response from Gemini");
+  return JSON.parse(cleanJSON(response.text)) as GeneratedDescriptions;
 }
 
 export async function generateTags(topic: string): Promise<GeneratedTags> {
@@ -167,7 +178,8 @@ export async function generateTags(topic: string): Promise<GeneratedTags> {
     }
   });
 
-  return JSON.parse(response.text!.trim()) as GeneratedTags;
+  if (!response.text) throw new Error("No response from Gemini");
+  return JSON.parse(cleanJSON(response.text)) as GeneratedTags;
 }
 
 export async function generateIdeas(niche: string): Promise<GeneratedIdeas> {
@@ -200,7 +212,8 @@ export async function generateIdeas(niche: string): Promise<GeneratedIdeas> {
     }
   });
 
-  return JSON.parse(response.text!.trim()) as GeneratedIdeas;
+  if (!response.text) throw new Error("No response from Gemini");
+  return JSON.parse(cleanJSON(response.text)) as GeneratedIdeas;
 }
 
 export async function generateChannelNames(niche: string, keywords: string): Promise<GeneratedChannelNames> {
@@ -222,7 +235,8 @@ export async function generateChannelNames(niche: string, keywords: string): Pro
     }
   });
 
-  return JSON.parse(response.text!.trim()) as GeneratedChannelNames;
+  if (!response.text) throw new Error("No response from Gemini");
+  return JSON.parse(cleanJSON(response.text)) as GeneratedChannelNames;
 }
 
 export async function generateThumbnailIdeas(topic: string, title: string): Promise<GeneratedThumbnailIdeas> {
@@ -254,7 +268,8 @@ export async function generateThumbnailIdeas(topic: string, title: string): Prom
     }
   });
 
-  return JSON.parse(response.text!.trim()) as GeneratedThumbnailIdeas;
+  if (!response.text) throw new Error("No response from Gemini");
+  return JSON.parse(cleanJSON(response.text)) as GeneratedThumbnailIdeas;
 }
 
 export async function generateScriptOutline(topic: string, title: string): Promise<GeneratedScriptOutline> {
@@ -287,7 +302,8 @@ export async function generateScriptOutline(topic: string, title: string): Promi
     }
   });
 
-  return JSON.parse(response.text!.trim()) as GeneratedScriptOutline;
+  if (!response.text) throw new Error("No response from Gemini");
+  return JSON.parse(cleanJSON(response.text)) as GeneratedScriptOutline;
 }
 
 export async function generateCommentReplies(comment: string): Promise<GeneratedCommentReplies> {
@@ -319,5 +335,6 @@ export async function generateCommentReplies(comment: string): Promise<Generated
     }
   });
 
-  return JSON.parse(response.text!.trim()) as GeneratedCommentReplies;
+  if (!response.text) throw new Error("No response from Gemini");
+  return JSON.parse(cleanJSON(response.text)) as GeneratedCommentReplies;
 }

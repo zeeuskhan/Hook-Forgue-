@@ -332,18 +332,21 @@ function CollapsibleFAQ({ faq }: { faq: { q: string; a: string }, key?: any }) {
 function TitleSection({ copyToClipboard, copiedId }: any) {
   const [topic, setTopic] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [titles, setTitles] = useState<string[] | null>(null);
   const outputRef = useRef<HTMLDivElement>(null);
 
   const handleGenerate = async () => {
     if (!topic.trim()) return;
     setLoading(true);
+    setError(null);
     try {
       const result = await generateTitles(topic);
       setTitles(result.titles);
       setTimeout(() => outputRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to generate titles. Please check your connection and try again.");
     } finally {
       setLoading(false);
     }
@@ -382,6 +385,12 @@ function TitleSection({ copyToClipboard, copiedId }: any) {
             {loading ? <RefreshCw className="animate-spin" /> : <Sparkles />}
             {loading ? "Generating..." : "Forge Viral Titles"}
           </button>
+          
+          {error && (
+            <p className="text-rose-500 text-xs font-bold text-center mt-4">
+              {error}
+            </p>
+          )}
         </div>
       </div>
 
@@ -408,18 +417,21 @@ function DescriptionSection({ copyToClipboard, copiedId }: any) {
   const [topic, setTopic] = useState("");
   const [keywords, setKeywords] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [description, setDescription] = useState<string | null>(null);
   const outputRef = useRef<HTMLDivElement>(null);
 
   const handleGenerate = async () => {
     if (!topic.trim()) return;
     setLoading(true);
+    setError(null);
     try {
       const result = await generateDescriptions(topic, keywords);
       setDescription(result.description);
       setTimeout(() => outputRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to generate description. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -468,6 +480,12 @@ function DescriptionSection({ copyToClipboard, copiedId }: any) {
             {loading ? <RefreshCw className="animate-spin" /> : <AlignLeft />}
             {loading ? "Writing Description..." : "Generate Description"}
           </button>
+          
+          {error && (
+            <p className="text-rose-500 text-xs font-bold text-center mt-4">
+              {error}
+            </p>
+          )}
         </div>
       </div>
 
@@ -491,18 +509,21 @@ function DescriptionSection({ copyToClipboard, copiedId }: any) {
 function TagSection({ copyToClipboard, copiedId }: any) {
   const [topic, setTopic] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [tags, setTags] = useState<string[] | null>(null);
   const outputRef = useRef<HTMLDivElement>(null);
 
   const handleGenerate = async () => {
     if (!topic.trim()) return;
     setLoading(true);
+    setError(null);
     try {
       const result = await generateTags(topic);
       setTags(result.tags);
       setTimeout(() => outputRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to generate tags.");
     } finally {
       setLoading(false);
     }
@@ -541,6 +562,12 @@ function TagSection({ copyToClipboard, copiedId }: any) {
             {loading ? <RefreshCw className="animate-spin" /> : <Tag />}
             {loading ? "Exploring Tags..." : "Generate Tags"}
           </button>
+          
+          {error && (
+            <p className="text-rose-500 text-xs font-bold text-center mt-4">
+              {error}
+            </p>
+          )}
         </div>
       </div>
 
@@ -576,18 +603,21 @@ function TagSection({ copyToClipboard, copiedId }: any) {
 function IdeaSection() {
   const [niche, setNiche] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [ideas, setIdeas] = useState<GeneratedIdeas["ideas"] | null>(null);
   const outputRef = useRef<HTMLDivElement>(null);
 
   const handleGenerate = async () => {
     if (!niche.trim()) return;
     setLoading(true);
+    setError(null);
     try {
       const result = await generateIdeas(niche);
       setIdeas(result.ideas);
       setTimeout(() => outputRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to generate ideas. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -626,6 +656,12 @@ function IdeaSection() {
             {loading ? <RefreshCw className="animate-spin" /> : <Lightbulb />}
             {loading ? "Forging Ideas..." : "Generate Viral Ideas"}
           </button>
+
+          {error && (
+            <p className="text-rose-500 text-xs font-bold text-center mt-4">
+              {error}
+            </p>
+          )}
         </div>
       </div>
 
@@ -654,18 +690,21 @@ function ChannelNamerSection({ copyToClipboard, copiedId }: any) {
   const [niche, setNiche] = useState("");
   const [keywords, setKeywords] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [names, setNames] = useState<string[] | null>(null);
   const outputRef = useRef<HTMLDivElement>(null);
 
   const handleGenerate = async () => {
     if (!niche.trim()) return;
     setLoading(true);
+    setError(null);
     try {
       const result = await generateChannelNames(niche, keywords);
       setNames(result.names);
       setTimeout(() => outputRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to generate names.");
     } finally {
       setLoading(false);
     }
@@ -714,6 +753,12 @@ function ChannelNamerSection({ copyToClipboard, copiedId }: any) {
             {loading ? <RefreshCw className="animate-spin" /> : <User />}
             {loading ? "Naming..." : "Generate Channel Names"}
           </button>
+
+          {error && (
+            <p className="text-rose-500 text-xs font-bold text-center mt-4">
+              {error}
+            </p>
+          )}
         </div>
       </div>
 
@@ -740,18 +785,21 @@ function ThumbnailIdeaSection({ copyToClipboard, copiedId }: any) {
   const [topic, setTopic] = useState("");
   const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [suggestions, setSuggestions] = useState<GeneratedThumbnailIdeas["suggestions"] | null>(null);
   const outputRef = useRef<HTMLDivElement>(null);
 
   const handleGenerate = async () => {
     if (!topic.trim()) return;
     setLoading(true);
+    setError(null);
     try {
       const result = await generateThumbnailIdeas(topic, title);
       setSuggestions(result.suggestions);
       setTimeout(() => outputRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to generate thumbnail ideas.");
     } finally {
       setLoading(false);
     }
@@ -800,6 +848,12 @@ function ThumbnailIdeaSection({ copyToClipboard, copiedId }: any) {
             {loading ? <RefreshCw className="animate-spin" /> : <ImageIcon />}
             {loading ? "Visualizing..." : "Generate Thumbnail Ideas"}
           </button>
+
+          {error && (
+            <p className="text-rose-500 text-xs font-bold text-center mt-4">
+              {error}
+            </p>
+          )}
         </div>
       </div>
 
@@ -838,18 +892,21 @@ function ScriptOutlineSection({ copyToClipboard, copiedId }: any) {
   const [topic, setTopic] = useState("");
   const [title, setTitle] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [outline, setOutline] = useState<GeneratedScriptOutline["outline"] | null>(null);
   const outputRef = useRef<HTMLDivElement>(null);
 
   const handleGenerate = async () => {
     if (!topic.trim()) return;
     setLoading(true);
+    setError(null);
     try {
       const result = await generateScriptOutline(topic, title);
       setOutline(result.outline);
       setTimeout(() => outputRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to generate script outline.");
     } finally {
       setLoading(false);
     }
@@ -898,6 +955,12 @@ function ScriptOutlineSection({ copyToClipboard, copiedId }: any) {
             {loading ? <RefreshCw className="animate-spin" /> : <ScrollText />}
             {loading ? "Outlining..." : "Generate Script Outline"}
           </button>
+
+          {error && (
+            <p className="text-rose-500 text-xs font-bold text-center mt-4">
+              {error}
+            </p>
+          )}
         </div>
       </div>
 
@@ -934,18 +997,21 @@ function ScriptOutlineSection({ copyToClipboard, copiedId }: any) {
 function CommentAISection({ copyToClipboard, copiedId }: any) {
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [replies, setReplies] = useState<GeneratedCommentReplies["replies"] | null>(null);
   const outputRef = useRef<HTMLDivElement>(null);
 
   const handleGenerate = async () => {
     if (!comment.trim()) return;
     setLoading(true);
+    setError(null);
     try {
       const result = await generateCommentReplies(comment);
       setReplies(result.replies);
       setTimeout(() => outputRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to generate replies.");
     } finally {
       setLoading(false);
     }
@@ -984,6 +1050,12 @@ function CommentAISection({ copyToClipboard, copiedId }: any) {
             {loading ? <RefreshCw className="animate-spin" /> : <MessageSquare />}
             {loading ? "Drafting..." : "Generate Smart Replies"}
           </button>
+
+          {error && (
+            <p className="text-rose-500 text-xs font-bold text-center mt-4">
+              {error}
+            </p>
+          )}
         </div>
       </div>
 
@@ -1099,6 +1171,12 @@ function ToolSection({
             {loading ? <RefreshCw className="w-6 h-6 animate-spin" /> : <Zap className="w-6 h-6" />}
             {loading ? "Forging 20 Hooks..." : "Generate Hooks"}
           </button>
+          
+          {error && (
+            <p className="text-rose-500 text-xs font-bold text-center">
+              {error}
+            </p>
+          )}
         </div>
       </div>
 
@@ -1254,6 +1332,7 @@ export default function App() {
   const [tone, setTone] = useState("Viral");
   const [platform, setPlatform] = useState("YouTube");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [hooks, setHooks] = useState<GeneratedHooks | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   
@@ -1262,12 +1341,14 @@ export default function App() {
   const handleGenerate = async () => {
     if (!topic.trim()) return;
     setLoading(true);
+    setError(null);
     try {
       const result = await generateHooks(topic, tone, platform);
       setHooks(result);
       setTimeout(() => outputRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
-    } catch (error) {
-      console.error("Generation failed:", error);
+    } catch (err) {
+      console.error("Generation failed:", err);
+      setError("Failed to generate hooks. Please try again in 30 seconds.");
     } finally {
       setLoading(false);
     }
